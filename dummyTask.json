@@ -1,0 +1,129 @@
+[ {
+	"id" : "ifengnew_xxxxxxxxx1",
+	"jobId" : "1",
+	"planExecDate" : "2015/02/03",
+	"planExecPeriod" : "7-22",
+	"status" : "NONE",
+	"phone" : {
+		"manufacturer" : "中兴",
+		"modelName" : "ZTEU817",
+		"modelId" : "ZTEU817",
+		"wifiMAC" : "09-98-AC-A9-65-C3",
+		"imei" : "869585015357569",
+		"imsi" : "460030912121001"
+	},
+	"emulator" : {
+		"avdName" : "Android_monkey_1",
+		"osVersion" : {
+			"targetName" : "android-17",
+			"sdkLevel" : 17,
+			"customPlatform" : false
+		},
+		"screenDensity" : {
+			"dpi" : 160,
+			"customDensity" : false
+		},
+		"screenResolution" : {
+			"skinName" : "HVGA",
+			"customResolution" : false,
+			"dimensionString" : "320x480"
+		},
+		"deviceLocale" : "en_US",
+		"targetAbi" : "armeabi-v7a",
+		"sdCardSize" : "100M",
+		"avdNameSuffix" : "",
+		"hardwareProperties" : null,
+		"wipeData" : false,
+		"showWindow" : true,
+		"useSnapshots" : false,
+		"deleteAfterBuild" : false,
+		"startupDelay" : 0,
+		"commandLineOptions" : "-partition-size 300",
+		"executable" : "EMULATOR",
+		"androidSdkHome" : "D://tools//Android//android-sdk"
+	},
+	"slaver" : {
+		"slaverMAC" : "8C-70-5A-9C-71-C4",
+		"slaverIP" : "192.168.3.105",
+		"vpnMAC" : "08-00-27-00-A0-17",
+		"vpnIP" : "192.168.56.1"
+	},
+	"appRunner" : {
+		"appId" : "ifeng.apk",
+		"packageName" : "com.ifeng.new2",
+		"appName" : "凤凰新闻",
+		"appType" : "ifengnew",
+		"scriptName" : "ifeng.bat",
+		"scriptType" : "New"
+	},
+	"createTime" : null,
+	"assignTime" : null,
+	"execStartTime" : null,
+	"exceEndTime" : null,
+	"log" : null,
+	"ports" : null
+}, {
+	"id" : "ifengnew_xxxxxxxxx2",
+	"jobId" : "1",
+	"planExecDate" : "2015/02/03",
+	"planExecPeriod" : "7-22",
+	"status" : "NONE",
+	"phone" : {
+		"manufacturer" : "中兴",
+		"modelName" : "ZTEU817",
+		"modelId" : "ZTEU817",
+		"wifiMAC" : "09-98-AC-A9-65-C3",
+		"imei" : "869585015357569",
+		"imsi" : "460030912121001"
+	},
+	"emulator" : {
+		"avdName" : "Android_monkey_2",
+		"osVersion" : {
+			"targetName" : "android-17",
+			"sdkLevel" : 17,
+			"customPlatform" : false
+		},
+		"screenDensity" : {
+			"dpi" : 160,
+			"customDensity" : false
+		},
+		"screenResolution" : {
+			"skinName" : "HVGA",
+			"customResolution" : false,
+			"dimensionString" : "320x480"
+		},
+		"deviceLocale" : "en_US",
+		"targetAbi" : "armeabi-v7a",
+		"sdCardSize" : "100M",
+		"avdNameSuffix" : "",
+		"hardwareProperties" : null,
+		"wipeData" : false,
+		"showWindow" : true,
+		"useSnapshots" : false,
+		"deleteAfterBuild" : false,
+		"startupDelay" : 0,
+		"commandLineOptions" : "-partition-size 300",
+		"executable" : "EMULATOR",
+		"androidSdkHome" : "D://tools//Android//android-sdk"
+	},
+	"slaver" : {
+		"slaverMAC" : "8C-70-5A-9C-71-C4",
+		"slaverIP" : "192.168.3.105",
+		"vpnMAC" : "08-00-27-00-A0-17",
+		"vpnIP" : "192.168.56.1"
+	},
+	"appRunner" : {
+		"appId" : "ifeng.apk",
+		"packageName" : "com.ifeng.new2",
+		"appName" : "凤凰新闻",
+		"appType" : "ifengnew",
+		"scriptName" : "ifeng.bat",
+		"scriptType" : "Alive"
+	},
+	"createTime" : null,
+	"assignTime" : null,
+	"execStartTime" : null,
+	"exceEndTime" : null,
+	"log" : null,
+	"ports" : null
+} ]
