@@ -8,16 +8,30 @@ var fetchCount = 15;
 
 /* GET users listing. */
 router.get('/get', function(req, res, next) {
-    db.get('task').find({
-            'slaver.slaverMAC': req.query.slaverMAC,
-            'planExecDate':req.query.planExecDate},
+
+    var searchCondition = {
+        'slaver.slaverMAC': req.query.slaverMAC,
+        'planExecDate':req.query.planExecDate,
+        'status':'NONE'
+    };
+    var limit = {
+        limit: 15
+    };
+
+    db.get('task').find(
+        searchCondition,
+        limit,
         function(err, docs) {
+
+            db.get("task").update(searchCondition, limit, {
+                $set : {status: "INPROGRESS"}
+            }, function(err, docs){
+                //TODO null;
+            });
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
             res.send(docs);
 
         });
-
-    db.get("task").find()
 });
 
 router.get('/status', function(req, res, next) {
