@@ -1,4 +1,4 @@
-[ {
+db.task.insert([ {
 	"id" : "ifengnew_xxxxxxxxx1",
 	"jobId" : "1",
 	"planExecDate" : "2015/02/03",
@@ -126,4 +126,4 @@
 	"exceEndTime" : null,
 	"log" : null,
 	"ports" : null
-} ]
+} ])

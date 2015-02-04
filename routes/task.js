@@ -1,56 +1,65 @@
-var express = require('express');
-var router = express.Router();
-var mongo = require('mongodb')
-    , monk = require('monk')
-    , db = monk('localhost:27017/test');
+var express = require('express'),
+	router = express.Router(),
+	mongo = require('mongodb'),
+    monk = require('monk'),
+    db = monk('localhost:27017/test'),
+    fetchCount = 1;
 
-var fetchCount = {
-    limit: fetchCount
-};
-
-/* GET users listing. */
+/**
+ * fetch task list 
+ */
 router.get('/get', function(req, res, next) {
-
+	console.log('task.get.start');
     db.get('task').find(
-        getSearchCondition(req),
-        fetchCount,
+    	req.query,
         function(err, docs) {
-
-            db.get("task").update(getSearchCondition(req), fetchCount, {
-                $set : {status: "INPROGRESS"}
-            }, function(err, docs){
-                //TODO null;
-            });
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
             res.send(docs);
-
         });
 });
 
-router.get('/:status', function(req, res, next) {
-    console.log("status= " + req.params.status);
-    db.get('task').update(getSearchCondition(req, 'INPROGRESS'),
-
-        {$set : {
-            status: req.params.status
-        }},
-        function(err, docs) {
-            if(err){
-                res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                res.send("failed with err: " + err);
-            }
-            res.setHeader('Content-Type', 'application/json;charset=utf-8');
-            res.send("success");
-
-        });
+/**
+ * fetch task list with query condition and status:NONE in count
+ */
+router.get('/getnew', function(req, res, next) {
+	console.log('task.get.start');
+	var condition=req.query;
+	condition.status="NONE";
+	
+    db.get('task').findAndModify({
+    	query: condition,
+    	limit: fetchCount,
+    	update:{
+    		$set:{
+    			status: 'INPROGRESS'
+    		}
+    	}
+    }, function(err, docs){
+    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+    	if(err){
+    		console.log(err);
+    		res.send(err);
+    	}
+    	res.send(docs);
+    });
 });
 
-function getSearchCondition(req, status){
-    return {
-       'slaver.slaverMAC': req.query.slaverMAC,
-        'planExecDate':req.query.planExecDate,
-        'status': status? status:'NONE'
-    };
-}
+
+/**
+ * update task 
+ */
+router.route('/update/:id').post(function(req, res, next) {
+	console.log('task.update.start');
+	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	db.get('task').update({id: 1},
+		{$set :req.body},
+		function(err, docs){
+			if(err){
+				res.send(err);
+			}
+			res.send(docs);
+    });
+	
+});
 
 module.exports = router;
