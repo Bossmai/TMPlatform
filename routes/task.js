@@ -46,8 +46,9 @@ router.get('/getnew', function(req, res, next) {
  * update task 
  */
 router.route('/update/:id').post(function(req, res, next) {
-	console.log('task.update.start');
+	console.log('task.update.start: ' + JSON.stringify(req.body));
 	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	
 	req.db.get('task').update({id: 1},
 		{$set :req.body},
 		function(err, docs){

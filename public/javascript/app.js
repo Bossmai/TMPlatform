@@ -50,20 +50,36 @@ Ext.application({
                 'createTime','assignTime','execStartTime','exceEndTime','log','ports']
         });
 
-        var store = Ext.create('Ext.data.Store', {
-            storeId:'taskStore',
-            model: 'Task',
-            proxy: {
-                type: 'rest',
-                url: 'task'
+        Ext.define('taskViewModel', {
+            extend: 'Ext.app.ViewModel',
+            alias: 'viewmodel.tasks',
+            stores: {
+            	tasks:{
+            		model: 'Task',
+            		autoLoad: true,
+            		proxy: {
+                      type: 'rest',
+                      url: 'task'
+            		}
+            	}
             }
         });
-
-        store.load();
+        
+        Ext.define('singleTaskViewModel', {
+            extend: 'Ext.app.ViewModel',
+            alias: 'viewmodel.singleTask'
+        });
+        
+        var singleTask = new singleTaskViewModel();
 
         Ext.create('Ext.grid.Panel', {
-            title: 'Tasks',
-            store: store,
+            
+            viewModel: {
+            	type: 'tasks'
+            },
+            bind:{
+            	store: '{tasks}'
+            },
             columns: [
                 { text: 'jobId',  dataIndex: 'jobId' },
                 { text: 'planExecDate', dataIndex: 'planExecDate'},
@@ -77,8 +93,59 @@ Ext.application({
                 { text: 'imsi', dataIndex:'phone', renderer: function(phone){return phone.imsi}},
                 { text: 'slaverMAC', dataIndex:'slaver', renderer: function(slaver){return slaver.slaverMAC}}
             ],
-            height: 400,
             width: 1200,
+            renderTo: Ext.getBody(),
+            listeners: {
+            	rowclick: function(el,record, tr, rowIndex, e, eOpts){
+            		 singleTask.setData(record.data);
+            	}
+            }
+        });
+        
+        
+        Ext.create('Ext.form.Panel', {
+            title: 'task Form',
+            bodyPadding: 5,
+            width: 350,
+            // Fields will be arranged vertically, stretched to full width
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
+            viewModel: singleTask,
+            // The fields
+            defaultType: 'textfield',
+            items: [{
+                fieldLabel: 'jobId',
+                name: 'jobId',
+                bind:{
+                	value: '{jobId}'
+                },
+                allowBlank: false
+            },{
+                fieldLabel: 'planExecDate',
+                name: 'planExecDate',
+                bind:{
+                	value: '{planExecDate}'
+                },
+                allowBlank: false
+            },{
+                xtype:'button',
+                text:'submit',
+                handler: function(){
+                	var data =singleTask.getData();
+                	Ext.Ajax.request({
+                		method: 'post',
+                	    url: 'task/update/'+data.id,
+                	    params: {jobId:2},
+                	    success: function(response){
+                	        var text = response.responseText;
+                	        
+                	    }
+                	});
+                }
+            }],
+            
             renderTo: Ext.getBody()
         });
     }
