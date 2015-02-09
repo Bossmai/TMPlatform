@@ -1,13 +1,13 @@
 var express = require('express'),
 	router = express.Router(),
-    fetchCount = 1;
+    fetchCount = 15;
 
 /**
- * fetch task list 
+ * fetch slaver list 
  */
 router.get('/', function(req, res, next) {
-	console.log('server.get.start');
-    req.db.get('server').find(
+	console.log('slaver.get.start');
+    req.db.get('slaver').find(
         {},//req.query,
         function(err, docs) {
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
@@ -16,11 +16,11 @@ router.get('/', function(req, res, next) {
 });
 
 /**
- * update single task
+ * update single slaver
  */
 router.put('/:id', function(req, res, next) {
-    console.log('server.update.start: ' + JSON.stringify(req.body));
-    req.db.get('server').update(
+    console.log('slaver.update.start: ' + JSON.stringify(req.body));
+    req.db.get('slaver').update(
         {id: req.params.id},
         {$set:req.body},
         function(err, docs) {
@@ -30,11 +30,11 @@ router.put('/:id', function(req, res, next) {
 });
 
 /**
- * delete single task
+ * delete single slaver
  */
 router.delete('/:id', function(req, res, next) {
-    console.log('server.delete.start: ' + JSON.stringify(req.body));
-    req.db.get('server').delete(
+    console.log('slaver.delete.start: ' + JSON.stringify(req.body));
+    req.db.get('slaver').delete(
         {id: req.params.id},
         function(err, docs) {
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
