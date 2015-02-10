@@ -13,8 +13,7 @@ Ext.define('tm.view.SlaverView', {
         type: 'slavers'
     },
 	items:[{
-		title:'服务器列表',
-        xtype:'grid',
+		xtype:'grid',
         modelValidation: true,
         bind:{
             store: '{slavers}'
@@ -59,7 +58,7 @@ Ext.define('tm.view.SlaverView', {
             }
         ],
         width: 800,
-        tbar:['->',{
+        tbar:['服务器列表','->',{
             text:'新增',
             handler: 'onAdd'
         
