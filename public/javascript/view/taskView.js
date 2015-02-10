@@ -68,11 +68,11 @@ Ext.application({
                 }],
                 buttons:[{
                     text:'submit',
-                    handler: 'onSubmit'/*,
+                    handler: 'onSubmit',
                     disabled: true,
                     bind:{
                         disabled:'{!status.dirtyAndValid}'
-                    }*/
+                    }
 
                 },{
                     text:'revert',

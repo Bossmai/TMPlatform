@@ -18,9 +18,6 @@ Ext.application({
                align: 'stretch'
            },
            items:[{
-               //header
-               html:'vvvvvvv'
-           },{
         	   xtype:'tabpanel',
         	   height: 400,
         	   width: 'auto',

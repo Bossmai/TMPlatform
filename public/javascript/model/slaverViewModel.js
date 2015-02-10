@@ -37,7 +37,7 @@ Ext.define('tm.model.SlaverViewModel', {
 
         status:{
             bind:{
-                bindTo:'currentSlaver',
+                bindTo:'{currentSlaver}',
                 deep:true
             },
 

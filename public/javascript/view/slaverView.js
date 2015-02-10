@@ -6,12 +6,14 @@ Ext.define('tm.view.SlaverView', {
 	extend: 'Ext.container.Container',
 	alias:'widget.slaverView',
 	controller: Ext.create('tm.ViewController',{
-		targetKey: 'currentSlaver'
+		formularKey: 'currentSlaver',
+		storeKey: 'slavers'
 	}),
 	viewModel: {
         type: 'slavers'
     },
 	items:[{
+		title:'服务器列表',
         xtype:'grid',
         modelValidation: true,
         bind:{
@@ -49,7 +51,7 @@ Ext.define('tm.view.SlaverView', {
             } }, {
             	 xtype:'actioncolumn',
             	 items: [{
-                     icon: 'extjs/examples/restful/images/delete.png',
+                     icon: '/img/remove.png',
                      tooltip: 'Delete',
                      selectOnFocus: true,
                      handler: 'onDelete'
@@ -57,13 +59,14 @@ Ext.define('tm.view.SlaverView', {
             }
         ],
         width: 800,
-        fbar: ['->',{
-        	xtype: 'button',
-        	text: '新增'
+        tbar:['->',{
+            text:'新增',
+            handler: 'onAdd'
+        
         }]
 	},{
 		xtype:'form',
-        title: 'grid Form',
+        title: '详细信息',
         bodyPadding: 5,
         width: 350,
         layout: 'anchor',
@@ -75,7 +78,7 @@ Ext.define('tm.view.SlaverView', {
         items: [{
             fieldLabel: 'name',
             name: 'name',
-            bind:'{currentSlaver.name}'
+            bind:'{currentSlaver.name}',
         },{
             fieldLabel: 'desc',
             name: 'desc',
@@ -94,11 +97,19 @@ Ext.define('tm.view.SlaverView', {
             bind:'{currentSlaver.initialPercentage}'
         }],
         buttons:[{
-            text:'submit',
-            handler: 'onSubmit'
+            text:'提交',
+            handler: 'onSubmit',
+            disabled: true,
+            bind:{
+                disabled:'{!status.dirtyAndValid}'
+            }
         },{
-            text:'revert',
-            handler:'onRevert'
+            text:'还原',
+            handler:'onRevert',
+            disabled: true,
+            bind:{
+                disabled:'{!status.dirty}'
+            }
         }]
 	}]
 });
