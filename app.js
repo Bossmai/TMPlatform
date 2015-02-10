@@ -12,6 +12,8 @@ var express = require('express'),
 	slaver = require('./routes/slaver');
 
 var app = express();
+db.options.multi = true;
+//DEBUG="monk:*";
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

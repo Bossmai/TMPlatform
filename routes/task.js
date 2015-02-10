@@ -1,6 +1,5 @@
 var express = require('express'),
-	router = express.Router(),
-    fetchCount = 15;
+	router = express.Router();
 
 /**
  * fetch task list 
@@ -48,38 +47,24 @@ router.delete('/:id', function(req, res, next) {
  * fetch task list with query condition and status:NONE in count
  */
 router.get('/getnew', function(req, res, next) {
-
-	var condition=req.query;
-	condition.status="NONE";
-    console.log('task.get.start:' + JSON.stringify(condition));
-    req.db.get('task').find({
-    	query: condition,
-    	limit: fetchCount
-    }, function(err, docs){
+	
+	var ret = [];
+	
+    req.db.get('task').find({status:'NONE'}, { stream: true, limit:15 })
+    .each(function(doc){
+    	ret.push(doc);
+    	req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
+    })
+    .error(function(err){
     	res.setHeader('Content-Type', 'application/json;charset=utf-8');
-    	if(err){
-    		console.log(err);
-    		res.send(err);
-            return;
-    	}
-
-        req.db.get('task').update({
-            query: condition,
-            limit: fetchCount
-        },{
-            $set:{
-                status: 'INPROGRESS'
-            }
-        },function(err, docs){
-            if(err){
-                res.send(err);
-                return;
-            }
-
-        });
-        res.send(docs);
-        return;
+        res.send(err);
+    })
+    .success(function(){
+    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+        res.send(ret);
     });
+    
+    
 });
 
 module.exports = router;
