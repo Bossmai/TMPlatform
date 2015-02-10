@@ -9,7 +9,8 @@ var express = require('express'),
     db = monk('localhost:27017/test'),
     routes = require('./routes/index'),
     task = require('./routes/task'),
-	slaver = require('./routes/slaver');
+	slaver = require('./routes/slaver'),
+	company = require('./routes/company');
 
 var app = express();
 db.options.multi = true;
@@ -36,6 +37,7 @@ app.use(function(req,res,next){
 app.use('/', routes);
 app.use('/task', task);
 app.use('/slaver', slaver);
+app.use('/company', company);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

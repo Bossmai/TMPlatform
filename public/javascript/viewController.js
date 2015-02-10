@@ -1,5 +1,5 @@
 Ext.define('tm.ViewController',{
-	formularKey: undefined,
+	formularKey: 'current',
 	storeKey: undefined,
     extend:'Ext.app.ViewController',
     alias:'controller.controller',

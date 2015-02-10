@@ -19,7 +19,7 @@ Ext.define('tm.model.SlaverViewModel', {
     },
 
     formulas:{
-        currentSlaver:{
+        current:{
             bind:{
                 bindTo:'{slavergrid.selection}',
                 deep: true
@@ -30,14 +30,14 @@ Ext.define('tm.model.SlaverViewModel', {
             set: function(slaver){
                 if(!slaver.isModel){
                 	slaver =  this.get('slavers').getById(slaver);
-                    this.set('currentSlaver', slaver);
+                    this.set('current', slaver);
                 }
             }
         },
 
         status:{
             bind:{
-                bindTo:'{currentSlaver}',
+                bindTo:'{current}',
                 deep:true
             },
 

@@ -3,6 +3,7 @@ Ext.Loader.setPath('tm.model','javascript/model');
 Ext.Loader.setPath('tm','javascript');
 Ext.require([
      'tm.view.SlaverView',
+     'tm.view.CompanyView',
      'tm.ViewController'
 ]);
 
@@ -32,10 +33,10 @@ Ext.application({
         	       items:[{xtype:'slaverView'}]
         			   
         	   },{
-        		   html:'test',
         		   tabConfig: {
         			   title: '厂商管理'
-        	       }
+        	       },
+        	       items:[{xtype:'companyView'}]
         	   },{
         		   html:'tttt',
         		   tabConfig: {

@@ -6,7 +6,7 @@ Ext.define('tm.view.SlaverView', {
 	extend: 'Ext.container.Container',
 	alias:'widget.slaverView',
 	controller: Ext.create('tm.ViewController',{
-		formularKey: 'currentSlaver',
+		formularKey: 'current',
 		storeKey: 'slavers'
 	}),
 	viewModel: {
@@ -25,27 +25,27 @@ Ext.define('tm.view.SlaverView', {
         reference:'slavergrid',
         columns: [
             { text: '名称', dataIndex: 'name',editor:{
-                bind:'{currentGrid.name}',
+                bind:'{current.name}',
                 selectOnFocus: true
             } },
             { text: '描述', dataIndex: 'desc',editor:{
-                bind:'{currentGrid.desc}',
+                bind:'{current.desc}',
                 selectOnFocus: true
             } },
             { text: 'ip', dataIndex: 'ip',editor:{
-                bind:'{currentGrid.ip}',
+                bind:'{current.ip}',
                 selectOnFocus: true
             } },
             { text: 'MAC', dataIndex:'mac',editor:{
-                bind:'{currentGrid.mac}',
+                bind:'{current.mac}',
                 selectOnFocus: true
             } },
             { text: '初始百分比', dataIndex:'initialPercentage',editor:{
-                bind:'{currentGrid.initialPercentage}',
+                bind:'{current.initialPercentage}',
                 selectOnFocus: true
             } },
             { text: '创建时间', dataIndex:'createDate',editor:{
-                bind:'{currentGrid.createDate}',
+                bind:'{current.createDate}',
                 selectOnFocus: true
             } }, {
             	 xtype:'actioncolumn',
@@ -77,23 +77,23 @@ Ext.define('tm.view.SlaverView', {
         items: [{
             fieldLabel: 'name',
             name: 'name',
-            bind:'{currentSlaver.name}',
+            bind:'{current.name}',
         },{
             fieldLabel: 'desc',
             name: 'desc',
-            bind:'{currentSlaver.desc}'
+            bind:'{current.desc}'
         },{
             fieldLabel: 'ip',
             name: 'ip',
-            bind:'{currentSlaver.ip}'
+            bind:'{current.ip}'
         },{
             fieldLabel: 'mac',
             name: 'mac',
-            bind:'{currentSlaver.mac}'
+            bind:'{current.mac}'
         },{
             fieldLabel: 'initialPercentage',
             name: 'initialPercentage',
-            bind:'{currentSlaver.initialPercentage}'
+            bind:'{current.initialPercentage}'
         }],
         buttons:[{
             text:'提交',
