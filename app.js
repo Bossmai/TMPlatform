@@ -10,7 +10,8 @@ var express = require('express'),
     routes = require('./routes/index'),
     task = require('./routes/task'),
 	slaver = require('./routes/slaver'),
-	company = require('./routes/company');
+	company = require('./routes/company'),
+    phoneType = require('./routes/phoneType');
 
 var app = express();
 db.options.multi = true;
@@ -38,6 +39,7 @@ app.use('/', routes);
 app.use('/task', task);
 app.use('/slaver', slaver);
 app.use('/company', company);
+app.use('/phoneType', phoneType);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

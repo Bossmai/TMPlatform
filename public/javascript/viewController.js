@@ -1,15 +1,14 @@
 Ext.define('tm.ViewController',{
-	formularKey: 'current',
-	storeKey: undefined,
+
     extend:'Ext.app.ViewController',
     alias:'controller.controller',
     onSubmit: function(){
-        var target = this.getViewModel().get(this.formularKey);
+        var target = this.getViewModel().get('current');
         target.save();
 
     },
     onRevert: function(){
-        var target = this.getViewModel().get(this.formularKey);
+        var target = this.getViewModel().get('current');
         target.reject();
     },
     
@@ -20,7 +19,7 @@ Ext.define('tm.ViewController',{
     
     onAdd: function(){
     	var me = this;
-		var store = this.getViewModel().getStore(this.storeKey);
+		var store = this.getViewModel().getStore('data');
 		store.add({});
     }
 });

@@ -5,10 +5,7 @@ Ext.require([
 Ext.define('tm.view.SlaverView', {
 	extend: 'Ext.container.Container',
 	alias:'widget.slaverView',
-	controller: Ext.create('tm.ViewController',{
-		formularKey: 'current',
-		storeKey: 'slavers'
-	}),
+	controller: Ext.create('tm.ViewController'),
 	viewModel: {
         type: 'slavers'
     },
@@ -16,7 +13,7 @@ Ext.define('tm.view.SlaverView', {
 		xtype:'grid',
         modelValidation: true,
         bind:{
-            store: '{slavers}'
+            store: '{data}'
         },
         requires:['Ext.grid.plugin.CellEditing'],
         plugins:[{
@@ -58,6 +55,8 @@ Ext.define('tm.view.SlaverView', {
             }
         ],
         width: 800,
+        autoScroll: true,
+        height: 200,
         tbar:['服务器列表','->',{
             text:'新增',
             handler: 'onAdd'
@@ -77,7 +76,7 @@ Ext.define('tm.view.SlaverView', {
         items: [{
             fieldLabel: 'name',
             name: 'name',
-            bind:'{current.name}',
+            bind:'{current.name}'
         },{
             fieldLabel: 'desc',
             name: 'desc',

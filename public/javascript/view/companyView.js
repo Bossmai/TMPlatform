@@ -7,9 +7,7 @@ Ext.require([
 Ext.define('tm.view.CompanyView', {
 	extend: 'Ext.container.Container',
 	alias:'widget.companyView',
-	controller: Ext.create('tm.ViewController',{
-		storeKey: 'companies'
-	}),
+	controller: Ext.create('tm.ViewController',{}),
 	viewModel: {
         type: 'companies'
     },
@@ -17,7 +15,7 @@ Ext.define('tm.view.CompanyView', {
 		xtype:'grid',
         modelValidation: true,
         bind:{
-            store: '{companies}'
+            store: '{data}'
         },
         requires:['Ext.grid.plugin.CellEditing'],
         plugins:[{
@@ -56,13 +54,15 @@ Ext.define('tm.view.CompanyView', {
             	 xtype:'actioncolumn',
             	 items: [{
                      icon: '/img/remove.png',
-                     tooltip: 'Delete',
+                     tooltip: '删除',
                      selectOnFocus: true,
                      handler: 'onDelete'
                  }]
             }
         ],
         width: 800,
+        autoScroll: true,
+        height: 200,
         tbar:['厂商列表','->',{
             text:'新增',
             handler: 'onAdd'
@@ -77,13 +77,11 @@ Ext.define('tm.view.CompanyView', {
         defaults: {
             anchor: '100%'
         },
-      //厂商编号	厂商名称	占有率	联系人	联系电话	Email	是否有效	录入日期
-      //'id','name','percentage','contactorName','contactPhone', 'email', 'isValid', 'createDate'
         defaultType: 'textfield',
         items: [{
             fieldLabel: '厂商名称',
             name: 'name',
-            bind:'{current.name}',
+            bind:'{current.name}'
         },{
             fieldLabel: '占有率',
             name: 'percentage',

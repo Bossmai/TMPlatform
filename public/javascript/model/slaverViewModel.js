@@ -3,16 +3,18 @@ Ext.define('Salver',{
     extend: 'Ext.data.Model',
     fields :['_id','id','name','desc','ip','mac', 'initialPercentage', 'createDate'],
     proxy: {
-    type: 'rest',
+        type: 'rest',
         url: 'slaver'
-}
+    },
+    requires: ['Ext.data.identifier.Uuid'],
+    identifier: 'uuid'
 });
 
 Ext.define('tm.model.SlaverViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.slavers',
     stores: {
-    	slavers:{
+    	data:{
     		model: 'Salver',
     		autoLoad: true
     	}
@@ -29,7 +31,7 @@ Ext.define('tm.model.SlaverViewModel', {
             },
             set: function(slaver){
                 if(!slaver.isModel){
-                	slaver =  this.get('slavers').getById(slaver);
+                	slaver =  this.get('data').getById(slaver);
                     this.set('current', slaver);
                 }
             }

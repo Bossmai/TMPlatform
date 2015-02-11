@@ -2,9 +2,10 @@ Ext.Loader.setPath('tm.view','javascript/view');
 Ext.Loader.setPath('tm.model','javascript/model');
 Ext.Loader.setPath('tm','javascript');
 Ext.require([
+    'tm.ViewController',
      'tm.view.SlaverView',
-     'tm.view.CompanyView',
-     'tm.ViewController'
+     'tm.view.CompanyView'
+
 ]);
 
 Ext.application({
@@ -20,15 +21,13 @@ Ext.application({
            },
            items:[{
         	   xtype:'tabpanel',
-        	   height: 400,
         	   width: 'auto',
         	   tabStretchMax: true,
         	   tabPosition: 'left',
         	   tabRotation: 0,
         	   items:[{
         		   tabConfig: {
-        			   title: '子服务器管理',
-        			   
+        			   title: '子服务器管理'
         	       },
         	       items:[{xtype:'slaverView'}]
         			   
@@ -38,10 +37,10 @@ Ext.application({
         	       },
         	       items:[{xtype:'companyView'}]
         	   },{
-        		   html:'tttt',
         		   tabConfig: {
         			   title: '机型管理'
-        	       }
+        	       },
+                   items:[{xtype:'phoneTypeView'}]
         			   
         	   },{
         		   html:'tttt',

@@ -1,19 +1,20 @@
-//厂商编号	厂商名称	占有率	联系人	联系电话	Email	是否有效	录入日期
 
 Ext.define('Company',{
     extend: 'Ext.data.Model',
     fields :['_id','id','name','percentage','contactorName','contactPhone', 'email', 'isValid', 'createDate'],
     proxy: {
-    type: 'rest',
+        type: 'rest',
         url: 'company'
-}
+    },
+    requires: ['Ext.data.identifier.Uuid'],
+    identifier: 'uuid'
 });
 
 Ext.define('tm.model.CompanyViewModel', {
     extend: 'Ext.app.ViewModel',
     alias: 'viewmodel.companies',
     stores: {
-    	companies:{
+    	data:{
     		model: 'Company',
     		autoLoad: true
     	}
@@ -30,7 +31,7 @@ Ext.define('tm.model.CompanyViewModel', {
             },
             set: function(company){
                 if(!company.isModel){
-                	company =  this.get('companies').getById(company);
+                	company =  this.get('data').getById(company);
                     this.set('current', company);
                 }
             }
@@ -51,6 +52,5 @@ Ext.define('tm.model.CompanyViewModel', {
                 return ret;
             }
         }
-
     }
 });

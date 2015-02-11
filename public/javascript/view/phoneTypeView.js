@@ -17,7 +17,7 @@ Ext.define('tm.view.PhoneTypeView', {
 		xtype:'grid',
         modelValidation: true,
         bind:{
-            store: '{phoneTypes}'
+            store: '{data}'
         },
         requires:['Ext.grid.plugin.CellEditing'],
         plugins:[{
