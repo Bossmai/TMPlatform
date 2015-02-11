@@ -6,7 +6,7 @@ Ext.require([
 
 Ext.define('tm.view.PhoneTypeView', {
 	extend: 'Ext.container.Container',
-	alias:'widget.phoneView',
+	alias:'widget.phoneTypeView',
 	controller: Ext.create('tm.ViewController',{
 		storeKey: 'phoneTypes'
 	}),
@@ -23,7 +23,7 @@ Ext.define('tm.view.PhoneTypeView', {
         plugins:[{
             ptype:'cellediting'
         }],
-        reference:'phonegrid',
+        reference:'grid',
         columns: [
 			{ text: '厂商编号', dataIndex: 'companyId',editor:{
 			    bind:'{current.companyId}',
@@ -105,29 +105,57 @@ Ext.define('tm.view.PhoneTypeView', {
       //'_id','id','companyId','companyName','type','display', 'percentage', 'TAC', 'madeIn', 'madeIn2', 'mac', 'brand', 'network', 'configFile', 'createDate'
         defaultType: 'textfield',
         items: [{
+            fieldLabel: '厂商编号',
+            name: 'companyId',
+            bind:'{current.companyId}'
+        },{
             fieldLabel: '厂商名称',
-            name: 'name',
-            bind:'{current.name}',
+            name: 'companyName',
+            bind:'{current.companyName}'
+        },{
+            fieldLabel: '机型',
+            name: 'type',
+            bind:'{current.type}'
+        },{
+            fieldLabel: '分辨率',
+            name: 'display',
+            bind:'{current.display}'
         },{
             fieldLabel: '占有率',
             name: 'percentage',
             bind:'{current.percentage}'
         },{
-            fieldLabel: '联系人',
-            name: 'contactorName',
-            bind:'{current.contactorName}'
+            fieldLabel: 'TAC',
+            name: 'TAC',
+            bind:'{current.TAC}'
         },{
-            fieldLabel: '联系电话',
-            name: 'contactPhone',
-            bind:'{current.contactPhone}'
+            fieldLabel: '产地1',
+            name: 'madeIn',
+            bind:'{current.madeIn}'
         },{
-            fieldLabel: 'Email',
-            name: 'email',
-            bind:'{current.email}'
+            fieldLabel: '产地2',
+            name: 'madeIn2',
+            bind:'{current.madeIn2}'
         },{
-            fieldLabel: '是否有效',
-            name: 'isValid',
-            bind:'{current.isValid}'
+            fieldLabel: 'MAC6',
+            name: 'mac',
+            bind:'{current.mac}'
+        },{
+            fieldLabel: '品牌',
+            name: 'brand',
+            bind:'{current.brand}'
+        },{
+            fieldLabel: '网',
+            name: 'network',
+            bind:'{current.network}'
+        },{
+            fieldLabel: '配置文件',
+            name: 'configFile',
+            bind:'{current.configFile}'
+        },{
+            fieldLabel: '创建时间',
+            name: 'createDate',
+            bind:'{current.createDate}'
         }],
         buttons:[{
             text:'提交',

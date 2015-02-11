@@ -21,7 +21,7 @@ Ext.define('tm.view.CompanyView', {
         plugins:[{
             ptype:'cellediting'
         }],
-        reference:'companygrid',
+        reference:'grid',
         columns: [
             { text: '厂商名称', dataIndex: 'name',editor:{
                 bind:'{current.name}',

@@ -3,9 +3,9 @@ Ext.Loader.setPath('tm.model','javascript/model');
 Ext.Loader.setPath('tm','javascript');
 Ext.require([
     'tm.ViewController',
-     'tm.view.SlaverView',
-     'tm.view.CompanyView'
-
+    'tm.view.SlaverView',
+    'tm.view.CompanyView',
+    'tm.view.PhoneTypeView'
 ]);
 
 Ext.application({

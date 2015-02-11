@@ -19,7 +19,7 @@ Ext.define('tm.view.SlaverView', {
         plugins:[{
             ptype:'cellediting'
         }],
-        reference:'slavergrid',
+        reference:'grid',
         columns: [
             { text: '名称', dataIndex: 'name',editor:{
                 bind:'{current.name}',
