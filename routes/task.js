@@ -23,8 +23,13 @@ router.put('/:id', function(req, res, next) {
         {id: req.params.id},
         {$set:req.body},
         function(err, docs) {
+            if (err) {
+                res.status(500);
+                return;
+            }
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
-            res.send(docs);
+            res.status(200);
+            res.send("{status: 'OK'}");
         });
 });
 
@@ -36,8 +41,13 @@ router.delete('/:id', function(req, res, next) {
     req.db.get('task').delete(
         {id: req.params.id},
         function(err, docs) {
+            if (err) {
+                res.status(500);
+                return;
+            }
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
-            res.send(docs);
+            res.status(200);
+            res.send("{status: 'OK'}");
         });
 });
 
