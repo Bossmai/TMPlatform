@@ -12,6 +12,7 @@ var express = require('express'),
 	slaver = require('./routes/slaver'),
 	company = require('./routes/company'),
     phoneType = require('./routes/phoneType');
+    mockingjay = require('./routes/mockingjay');
 
 var app = express();
 db.options.multi = true;
@@ -40,6 +41,7 @@ app.use('/task', task);
 app.use('/slaver', slaver);
 app.use('/company', company);
 app.use('/phoneType', phoneType);
+app.use('/mockingjay', mockingjay);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
