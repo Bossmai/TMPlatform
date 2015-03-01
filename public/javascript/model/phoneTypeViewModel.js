@@ -1,7 +1,7 @@
 
 Ext.define('PhoneType',{
     extend: 'Ext.data.Model',
-    fields :['_id','id','companyId','companyName','type','display', 'percentage', 'TAC', 'madeIn', 'madeIn2', 'mac', 'brand', 'network', 'configFile', 'createDate'],
+    fields :['_id','id','manufacturerId','manufacturerName','type','display', 'percentage', 'TAC', 'madeIn', 'madeIn2', 'mac', 'brand', 'network', 'configFile', 'createDate'],
     proxy: {
         type: 'rest',
         url: 'phoneType'

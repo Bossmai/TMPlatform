@@ -10,7 +10,6 @@ var express = require('express'),
     routes = require('./routes/index'),
     task = require('./routes/task'),
 	slaver = require('./routes/slaver'),
-	company = require('./routes/company'),
     phoneType = require('./routes/phoneType');
     mockingjay = require('./routes/mockingjay');
 
@@ -39,7 +38,6 @@ app.use(function(req,res,next){
 app.use('/', routes);
 app.use('/task', task);
 app.use('/slaver', slaver);
-app.use('/company', company);
 app.use('/phoneType', phoneType);
 app.use('/mockingjay', mockingjay);
 

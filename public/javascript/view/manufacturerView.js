@@ -1,12 +1,12 @@
 //厂商编号	厂商名称	占有率	联系人	联系电话	Email	是否有效	录入日期
 //'id','name','percentage','contactorName','contactPhone', 'email', 'isValid', 'createDate'
 Ext.require([
-     'tm.model.CompanyViewModel'
+     'tm.model.ManufacturerViewModel'
 ]);
 
-Ext.define('tm.view.CompanyView', {
+Ext.define('tm.view.ManufacturerView', {
 	extend: 'Ext.container.Container',
-	alias:'widget.companyView',
+	alias:'widget.manufactureryView',
 	controller: Ext.create('tm.ViewController',{}),
 	viewModel: {
         type: 'companies'
@@ -29,18 +29,6 @@ Ext.define('tm.view.CompanyView', {
             } },
             { text: '占有率', dataIndex: 'percentage',editor:{
                 bind:'{current.percentage}',
-                selectOnFocus: true
-            } },
-            { text: '联系人', dataIndex: 'contactorName',editor:{
-                bind:'{current.contactorName}',
-                selectOnFocus: true
-            } },
-            { text: '联系电话', dataIndex:'contactPhone',editor:{
-                bind:'{current.contactPhone}',
-                selectOnFocus: true
-            } },
-            { text: 'Email', dataIndex:'email',editor:{
-                bind:'{current.email}',
                 selectOnFocus: true
             } },
             { text: '是否有效', dataIndex:'isValid',editor:{
@@ -86,18 +74,6 @@ Ext.define('tm.view.CompanyView', {
             fieldLabel: '占有率',
             name: 'percentage',
             bind:'{current.percentage}'
-        },{
-            fieldLabel: '联系人',
-            name: 'contactorName',
-            bind:'{current.contactorName}'
-        },{
-            fieldLabel: '联系电话',
-            name: 'contactPhone',
-            bind:'{current.contactPhone}'
-        },{
-            fieldLabel: 'Email',
-            name: 'email',
-            bind:'{current.email}'
         },{
             fieldLabel: '是否有效',
             name: 'isValid',

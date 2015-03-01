@@ -25,12 +25,12 @@ Ext.define('tm.view.PhoneTypeView', {
         }],
         reference:'grid',
         columns: [
-			{ text: '厂商编号', dataIndex: 'companyId',editor:{
-			    bind:'{current.companyId}',
+			{ text: '厂商编号', dataIndex: 'manufacturerId',editor:{
+			    bind:'{current.manufacturerId}',
 			    selectOnFocus: true
 			} },
-            { text: '厂商名称', dataIndex: 'companyName',editor:{
-                bind:'{current.companyName}',
+            { text: '厂商名称', dataIndex: 'manufacturerName',editor:{
+                bind:'{current.manufacturerName}',
                 selectOnFocus: true
             } },
             { text: '机型', dataIndex: 'type',editor:{

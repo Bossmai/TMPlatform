@@ -5,137 +5,95 @@ var express = require('express'),
 var utils = {
     slaverList : undefined,
     appList : undefined,
-    companies : undefined,
+    manufacturers : undefined,
     phoneTypeList: undefined,
 
-    init: function(req){
+    init: function(req, res, fn){
         var me = this;
         req.db.get('slaver').find({}, function(err, docs) {
             me.slaverList = docs;
-        });
+            me.appList = [{
+                id: 'ifengnews',
+                "packageName" : "com.ifeng.new2",
+                "scriptName" : "ifeng.bat",
+                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
+            }];
 
-        req.db.get('app').find({}, function(err, docs) {
-            me.appList = docs;
-        });
-
-        req.db.get('company').find({}, function(err, docs) {
-            docs.map(function(c){
-                me.companies[c.id]= c.percentage;
+            //TODO need add sort by percent;
+            req.db.get('phoneType').find({}, function(err, docs) {
+                me.phoneTypeList = docs;
+                fn(req, res);
             });
         });
+    },
 
-        req.db.get('phoneType').find({}, function(err, docs) {
-            me.phoneTypeList = docs;
-        });
-
-//        me.companies = {
-//            'D008': 73,
-//            'D000': 27
-//        };
-//
-//        me.slaverList = [{
-//            "slaverMAC" : "8C-70-5A-9C-71-C4",
-//            "slaverIP" : "192.168.3.105",
-//            "vpnMAC" : "08-00-27-00-A0-17",
-//            "vpnIP" : "192.168.56.1"
-//        },{
-//            "slaverMAC" : "1C-70-5A-9C-71-C5",
-//            "slaverIP" : "192.168.3.106",
-//            "vpnMAC" : "08-00-27-00-A0-16",
-//            "vpnIP" : "192.168.56.2"
-//        }];
-//
-//        me.phoneTypeList = [{
-//            id: '1',
-//            companyId: 'D008',
-//            tac: '861698',
-//            fac1: '00',
-//            mac6: '56:32:11 ',
-//            "manufacturer" : "联想",
-//            "modelName" : "V880",
-//            "modelId" : "V880",
-//            MNC : '02',
-//            percentage: 30
-//        },{
-//            id: '2',
-//            companyId: 'D008',
-//            fac1: '01',
-//            tac: '865316',
-//            mac6: '32:22:11',
-//            "manufacturer" : "联想",
-//            "modelName" : "U795",
-//            "modelId" : "U795",
-//            MNC : '02',
-//            percentage: 70
-//        },{
-//            id: '3',
-//            companyId: 'D000',
-//            tac: '353614',
-//            mac6: '22:32:11',
-//            fac1: '04',
-//            "manufacturer" : "三星",
-//            "modelName" : "T328w",
-//            "modelId" : "T328w",
-//            MNC : '02',
-//            percentage: 15
-//        },{
-//            id: '4',
-//            companyId: 'D000',
-//            tac: '355868',
-//            mac6: '34:56:90',
-//            fac1: '05',
-//            "manufacturer" : "三星",
-//            "modelName" : "802w-2",
-//            "modelId" : "802w-2",
-//            MNC : '02',
-//            percentage: 30
-//        },{
-//            id: '4',
-//            companyId: 'D000',
-//            tac: '359788',
-//            mac6: '70:34:28',
-//            "manufacturer" : "三星",
-//            "modelName" : "Desire-HD-2",
-//            "modelId" : "Desire-HD-2",
-//            MNC : '02',
-//            percentage: 55
-//        }];
-//
-//        me.appList = [{
-//            id: 'ifengnews',
-//            "packageName" : "com.ifeng.new2",
-//            "scriptName" : "ifeng.bat",
-//            lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
-//        }];
-
+    random : function(max){
+        return Math.ceil(Math.random() * max);
     },
 
     getPhone: function (_phone) {
         var me = this;
         return {
-            manufacturer: _phone.manufacturer,
-            modelName: _phone.modelName,
-            modelId: _phone.modelId,
-            wifiMAC: me.getMAC(_phone),
-            imei: me.getIMEI(_phone),
-            imsi: me.getIMSI(_phone)
+            "getBSSID" : me.getRandom16(5),
+            "getDeviceId" : me.getRandom(15),
+            "getMacAddress": me.getMAC(_phone),
+            "getNetworkOperator" : '460' + _phone.mnc,
+            "getPhoneType" : _phone.mnc,
+            "getSimOperator" : '460' + _phone.mnc,
+            "getSimSerialNumber" : me.getRandom(18),
+            "getSubscriberId" : me.getIMEI(_phone),
+            "BRAND" :  _phone.BRAND,
+            "DEVICE" :  _phone.DEVICE,
+            "HARDWARE" :  _phone.HARDWARE,
+            "MANUFACTURER" : _phone.MANUFACTURER,
+            "MODEL": _phone.MODEL,
+            "PRODUCT" : _phone.PRODUCT
         };
-
     },
+    getRandom16: function(length){
+        var me = this,
+            result = '';
+        for (var i = 0; i < length; i++) {
+            result += "-" + me.random(255).toString(16);
+        }
+        return result.substr(1);
+    },
+
+    getRandom: function(length){
+        var me = this,
+            result = '';
+        for (var i = 0; i < length; i++) {
+            result += me.random(9).toString();
+        }
+        return result;
+    },
+
     getMAC: function (_phone) {
-        var result = _phone.mac6.trim();
+        var me = this,
+            result ;
+        if(_phone.mac6 instanceof Array){
+            result = _phone.mac6[me.random( _phone.mac6.length)];
+        }else{
+            result = _phone.mac6;
+        }
         for (var i = 0; i < 3; i++) {
-            result += ":" + Math.round(Math.random() * 255).toString(16);
+            result += "-" + me.random(255).toString(16);
         }
         return result;
     },
 
     getIMEI: function (_phone) {
-        var result = _phone.tac;
-        result += _phone.fac1;
+        var me = this,
+            result;
+        if(_phone.tac instanceof Array){
+            result = _phone.tac[me.random( _phone.tac.length)];
+        }else{
+            result = _phone.tac;
+        }
+        result += _phone.fac;
         var snr = '';
         for (var i = 0; i < 6; i++) {
-            snr += Math.round(Math.random() * 9).toString();
+            snr += me.random(9).toString();
         }
         result += snr;
         var validation = 0;
@@ -155,13 +113,6 @@ var utils = {
             result += String(10 - validation);
         }
         return result;
-    },
-
-    getIMSI: function (_phone) {
-        var MCC = 460; // china
-        var MNC = _phone.MNC;
-        var temp = "1111111111";
-        return MCC + MNC + temp;
     },
 
     getSlaver : function(i){
@@ -202,7 +153,7 @@ var utils = {
         var me = this;
         var taskList = [];
         me.phoneTypeList.forEach(function(_phone, index){
-            var count = Math.ceil(_phone.percentage * me.companies[_phone.companyId]/10000 * job.newUsers);
+            var count = Math.ceil(_phone.percent /100 * job.newUsers);
             for(var i=0; i< count; i++){
                 var task = {
                     id: job.appId + _phone.modelId + i + '_1',
@@ -228,22 +179,24 @@ var utils = {
 };
 
 router.get('/', function(req, res, next) {
-    utils.init(req);
 
     var job = {
         pId : "ifengnews001",
         appId : 'ifengnews',
         planExecDate : '2015-01-01',
         planExecPeriod : '7-22',
-        newUsers: 100
+        newUsers: 300
     };
 
-    var tasks = utils.generateTasks(job);
-    tasks.forEach(function(d){
-        req.db.get('task').insert(d);
-    });
-    res.setHeader('Content-Type', 'application/json;charset=utf-8');
-    res.send(tasks);
+    function fn(req, res){
+        var tasks = utils.generateTasks(job);
+        tasks.forEach(function(d){
+            req.db.get('task').insert(d);
+        });
+        res.setHeader('Content-Type', 'application/json;charset=utf-8');
+        res.send(tasks);
+    };
+    utils.init(req ,res, fn);
 });
 
 module.exports = router;
