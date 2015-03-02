@@ -20,7 +20,7 @@ var utils = {
             }];
 
             //TODO need add sort by percent;
-            req.db.get('phoneType').find({}, function(err, docs) {
+            req.db.get('phoneType').find({},{sort:{percent:-1}}, function(err, docs) {
                 me.phoneTypeList = docs;
                 fn(req, res);
             });
@@ -187,6 +187,8 @@ router.get('/', function(req, res, next) {
         planExecPeriod : '7-22',
         newUsers: 300
     };
+
+//    var jon = JSON.stringify(req.body);
 
     function fn(req, res){
         var tasks = utils.generateTasks(job);
