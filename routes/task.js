@@ -60,7 +60,7 @@ router.get('/getnew', function(req, res, next) {
 	
 	var ret = [];
 	
-    req.db.get('task').find({status:'NONE'}, { stream: true, limit:15 })
+    req.db.get('task').find({status:'NONE'}, { stream: true, limit:req.query.limit || 15 })
     .each(function(doc){
     	ret.push(doc);
     	req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
