@@ -42,14 +42,14 @@ var utils = {
     getPhone: function (_phone) {
         var me = this;
         return {
-            "getBSSID" : me.getRandom16(5, ":"),
+            "getBSSID" : me.getRandom16(6, ":").toLowerCase(),
             "getDeviceId" : me.getIMEI(_phone), //imei
-            "getMacAddress": me.getMAC(_phone),
+            "getMacAddress": me.getMAC(_phone).toLowerCase(),
             "getNetworkOperator" : '460' + _phone.mnc,
             "getPhoneType" : _phone.mnc,
             "getSimOperator" : '460' + _phone.mnc,
             "getSimSerialNumber" : '8986' + me.getRandom(16),
-            "getSubscriberId" : '460' + _phone.mnc + me.getRandom(8), //imsi
+            "getSubscriberId" : '460' + _phone.mnc + me.getRandom(10), //imsi
             "BRAND" :  _phone.BRAND,
             "DEVICE" :  _phone.DEVICE,
             "HARDWARE" :  _phone.HARDWARE,
@@ -60,16 +60,24 @@ var utils = {
             "SDK" : "18",
             "getMetrics" : "720x1184",
             "getLine1Number" : me.randomPick(["13", "15", "18"]) + me.getRandom(9),
-            "getString" : me.getRandom16(16,"")
+            "getString" : me.getRandom16(8,"")
         };
     },
     getRandom16: function(length, splitter){
         var me = this,
             result = '';
         for (var i = 0; i < length; i++) {
-            result += splitter + me.random(255).toString(16);
+            var t = me.random(255).toString(16);
+            if(t.length===1){
+              t = "0"+t;
+            }
+            result += splitter + t;
         }
-        return result.substr(1);
+        if(splitter !== ""){
+          result = result.substr(1);
+        }
+        
+        return result;
     },
 
     getRandom: function(length){
