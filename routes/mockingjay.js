@@ -72,7 +72,7 @@ var utils = {
         var me = this,
             result ;
         if(_phone.mac6 instanceof Array){
-            result = _phone.mac6[me.random( _phone.mac6.length)];
+            result = _phone.mac6[me.random( _phone.mac6.length-1)];
         }else{
             result = _phone.mac6;
         }
@@ -86,16 +86,18 @@ var utils = {
         var me = this,
             result;
         if(_phone.tac instanceof Array){
-            result = _phone.tac[me.random( _phone.tac.length)];
+            result = _phone.tac[me.random( _phone.tac.length-1)];
         }else{
             result = _phone.tac;
         }
+        
         result += _phone.fac;
         var snr = '';
         for (var i = 0; i < 6; i++) {
             snr += me.random(9).toString();
         }
         result += snr;
+        
         var validation = 0;
         result.split('').forEach(function (d, i) {
             var temp = parseInt(d);
@@ -145,6 +147,7 @@ var utils = {
         result.forEach(function(d){
             var planExecDate = moment(d.planExecDate);
             d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY-MM-DD');
+            d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1)
         });
         return result;
     },
@@ -156,7 +159,7 @@ var utils = {
             var count = Math.ceil(_phone.percent /100 * job.newUsers);
             for(var i=0; i< count; i++){
                 var task = {
-                    id: job.appId + _phone.modelId + i + '_1',
+                    id: job.appId + _phone.MODEL + '_' + i + '_0',
                     jobId : job.pId,
                     planExecDate : job.planExecDate,
                     planExecPeriod : job.planExecPeriod,
