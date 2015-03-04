@@ -13,9 +13,12 @@ var utils = {
         req.db.get('slaver').find({}, function(err, docs) {
             me.slaverList = docs;
             me.appList = [{
-                id: 'ifengnews',
+                id: 'ifeng.apk',
                 "packageName" : "com.ifeng.new2",
-                "scriptName" : "ifeng.bat",
+                "appName" : "凤凰新闻",
+                "appType" : "ifengnew",
+                "scriptName" : "ifeng",
+                "scriptType" : "new",
                 lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
             }];
 
@@ -30,31 +33,41 @@ var utils = {
     random : function(max){
         return Math.ceil(Math.random() * max);
     },
+    
+    randomPick : function(d){
+      var me = this;
+      return d[me.random(d.length-1)];
+    },
 
     getPhone: function (_phone) {
         var me = this;
         return {
-            "getBSSID" : me.getRandom16(5),
-            "getDeviceId" : me.getRandom(15),
+            "getBSSID" : me.getRandom16(5, ":"),
+            "getDeviceId" : me.getIMEI(_phone), //imei
             "getMacAddress": me.getMAC(_phone),
             "getNetworkOperator" : '460' + _phone.mnc,
             "getPhoneType" : _phone.mnc,
             "getSimOperator" : '460' + _phone.mnc,
-            "getSimSerialNumber" : me.getRandom(18),
-            "getSubscriberId" : me.getIMEI(_phone),
+            "getSimSerialNumber" : '8986' + me.getRandom(16),
+            "getSubscriberId" : '460' + _phone.mnc + me.getRandom(8), //imsi
             "BRAND" :  _phone.BRAND,
             "DEVICE" :  _phone.DEVICE,
             "HARDWARE" :  _phone.HARDWARE,
             "MANUFACTURER" : _phone.MANUFACTURER,
             "MODEL": _phone.MODEL,
-            "PRODUCT" : _phone.PRODUCT
+            "PRODUCT" : _phone.PRODUCT,
+            "RELEASE" : '4.3',
+            "SDK" : "18",
+            "getMetrics" : "720x1184",
+            "getLine1Number" : me.randomPick(["13", "15", "18"]) + me.getRandom(9),
+            "getString" : me.getRandom16(16,"")
         };
     },
-    getRandom16: function(length){
+    getRandom16: function(length, splitter){
         var me = this,
             result = '';
         for (var i = 0; i < length; i++) {
-            result += "-" + me.random(255).toString(16);
+            result += splitter + me.random(255).toString(16);
         }
         return result.substr(1);
     },
@@ -76,9 +89,7 @@ var utils = {
         }else{
             result = _phone.mac6;
         }
-        for (var i = 0; i < 3; i++) {
-            result += "-" + me.random(255).toString(16);
-        }
+        result += ":" + me.getRandom16(3,":");
         return result;
     },
 
@@ -86,7 +97,7 @@ var utils = {
         var me = this,
             result;
         if(_phone.tac instanceof Array){
-            result = _phone.tac[me.random( _phone.tac.length-1)];
+            result = me.randomPick(_phone.tac);
         }else{
             result = _phone.tac;
         }
@@ -130,8 +141,11 @@ var utils = {
         })[0];
         return {
             "appId" : appId,
-            "packageName" : app.packageName
-
+            "packageName" : app.packageName,
+            "appName" : app.packageName,
+            "appType" : app.appType,
+            "scriptName" : app.scriptName,
+            "scriptType" : app.scriptType
         };
     },
 
@@ -185,7 +199,7 @@ router.get('/', function(req, res, next) {
 
     var job = {
         pId : "ifengnews001",
-        appId : 'ifengnews',
+        appId : 'ifeng.apk',
         planExecDate : '2015-01-01',
         planExecPeriod : '7-22',
         newUsers: 300
