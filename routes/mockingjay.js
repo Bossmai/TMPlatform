@@ -138,7 +138,6 @@ var utils = {
 
     getSlaver : function(i){
         var me = this;
-        var x = 15;
         return me.slaverList[Math.floor(i/15)% me.slaverList.length];
     },
 
@@ -189,7 +188,7 @@ var utils = {
                     phone: me.getPhone(_phone),
                     slaver : me.getSlaver(index * count + i),
                     appRunner: me.getAppRunner(job.appId),
-                    createTime: moment().format('YYYY-MM-DD')
+                    createTime: moment().format('YYYY/MM/DD')
                 };
                 taskList.push(task);
             }
@@ -222,7 +221,7 @@ router.get('/', function(req, res, next) {
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
         res.send(tasks);
-    };
+    }
     utils.init(req ,res, fn);
 });
 
