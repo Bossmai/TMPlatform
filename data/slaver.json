@@ -1,17 +1,6 @@
 db.slaver.insert([ {
-    "id" : "slaver1",
-    "name" : "slaver_1_name",
-    "desc" : " ",
-    "ip" : "192.168.2.1",
-    "mac" : "11-11-11-11-11-11",
-    "initialPercentage" : '20',
-    "createDate" : '2015/10/20'
-}, {
-    "id" : "slaver2",
-    "name" : "slaver_2_name",
-    "desc" : " ",
-    "ip" : "192.168.2.2",
-    "mac" : "22-22-22-22-22",
-    "initialPercentage" : '30',
-    "createDate" : '2015/1/10'
+"slaverMAC" : "08-00-27-00-A0-17",
+"slaverIP" : "192.168.3.105",
+"vpnMAC" : "08-00-27-00-A0-17",
+"vpnIP" : "192.168.56.1"
 } ])

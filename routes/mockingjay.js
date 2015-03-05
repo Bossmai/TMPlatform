@@ -168,7 +168,7 @@ var utils = {
         var result =  JSON.parse(JSON.stringify(taskList.slice(0, endIndex)));
         result.forEach(function(d){
             var planExecDate = moment(d.planExecDate);
-            d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY-MM-DD');
+            d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY/MM/DD');
             d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1)
         });
         return result;
@@ -208,7 +208,7 @@ router.get('/', function(req, res, next) {
     var job = {
         pId : "ifengnews001",
         appId : 'ifeng.apk',
-        planExecDate : '2015-01-01',
+        planExecDate : '2015/01/01',
         planExecPeriod : '7-22',
         newUsers: 300
     };
