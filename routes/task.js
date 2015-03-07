@@ -59,11 +59,19 @@ router.delete('/:id', function(req, res, next) {
 router.get('/getnew', function(req, res, next) {
 	
 	var ret = [];
-	
-    req.db.get('task').find({status:'NONE'}, { stream: true, limit:req.query.limit || 15 })
+	var query = {
+        status:'NONE'
+    };
+    if(req.query.slaverMAC){
+        query["slaver.slaverMAC"] = req.query.slaverMAC;
+    }
+    if(req.query.planExecDate){
+        query.planExecDate = req.query.planExecDate;
+    }
+    req.db.get('task').find(query, { stream: true, limit:req.query.limit || 15 })
     .each(function(doc){
     	ret.push(doc);
-    	req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
+    	//req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
     })
     .error(function(err){
     	res.setHeader('Content-Type', 'application/json;charset=utf-8');

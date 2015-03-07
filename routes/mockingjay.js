@@ -14,11 +14,15 @@ var utils = {
             me.slaverList = docs;
             me.appList = [{
                 id: 'ifeng.apk',
-                "packageName" : "com.ifeng.new2",
-                "appName" : "凤凰新闻",
-                "appType" : "ifengnew",
                 "scriptName" : "ifeng",
-                "scriptType" : "new",
+                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
+            },{
+                "id" : "ganji_6.1.1.apk",
+                "scriptName" : "ganji_6.1.1",
+                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
+            },{
+                "id" : "kuwo_6.6.0.apk",
+                "scriptName" : "kuwo_6.6.0_test",
                 lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
             }];
 
@@ -204,23 +208,39 @@ var utils = {
 
 router.get('/', function(req, res, next) {
 
-    var job = {
+    var jobs = [{
         pId : "ifengnews001",
         appId : 'ifeng.apk',
-        planExecDate : '2015/01/01',
+        planExecDate : moment().format('YYYY/MM/DD'),
         planExecPeriod : '7-22',
-        newUsers: 300
-    };
+        newUsers: 10
+    },{
+        pId : "ganji",
+        appId : 'ganji_6.1.1.apk',
+        planExecDate : moment().format('YYYY/MM/DD'),
+        planExecPeriod : '7-22',
+        newUsers: 10
+    },{
+        pId : "kuwo",
+        appId : 'kuwo_6.6.0.apk',
+        planExecDate : moment().format('YYYY/MM/DD'),
+        planExecPeriod : '7-22',
+        newUsers: 10
+    }];
 
-//    var jon = JSON.stringify(req.body);
+//    var jobs = JSON.stringify(req.body);
 
     function fn(req, res){
-        var tasks = utils.generateTasks(job);
-        tasks.forEach(function(d){
+        var allTasks = [];
+        jobs.forEach(function(job){
+            var tasks = utils.generateTasks(job);
+            allTasks = allTasks.concat(tasks);
+        });
+        allTasks.forEach(function(d){
             req.db.get('task').insert(d);
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
-        res.send(tasks);
+        res.send(allTasks);
     }
     utils.init(req ,res, fn);
 });
