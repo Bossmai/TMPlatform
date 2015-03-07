@@ -71,7 +71,7 @@ router.get('/getnew', function(req, res, next) {
     req.db.get('task').find(query, { stream: true, limit:req.query.limit || 15 })
     .each(function(doc){
     	ret.push(doc);
-    	//req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
+    	req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
     })
     .error(function(err){
     	res.setHeader('Content-Type', 'application/json;charset=utf-8');
