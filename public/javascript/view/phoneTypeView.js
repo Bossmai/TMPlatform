@@ -59,10 +59,6 @@ Ext.define('tm.view.PhoneTypeView', {
                 bind:'{current.tac}',
                 selectOnFocus: true
             } },
-            { text: 'mac', dataIndex:'mac',editor:{
-                bind:'{current.mac}',
-                selectOnFocus: true
-            } }, 
             { text: 'mnc', dataIndex:'mnc',editor:{
                 bind:'{current.mnc}',
                 selectOnFocus: true
