@@ -4,8 +4,8 @@ Ext.Loader.setPath('tm','javascript');
 Ext.require([
     'tm.ViewController',
     'tm.view.SlaverView',
-    'tm.view.CompanyView',
-    'tm.view.PhoneTypeView'
+    'tm.view.PhoneTypeView',
+    'tm.view.AppView'
 ]);
 
 Ext.application({
@@ -33,39 +33,15 @@ Ext.application({
         			   
         	   },{
         		   tabConfig: {
-        			   title: '厂商管理'
-        	       },
-        	       items:[{xtype:'companyView'}]
-        	   },{
-        		   tabConfig: {
         			   title: '机型管理'
         	       },
                    items:[{xtype:'phoneTypeView'}]
         			   
         	   },{
-        		   html:'tttt',
         		   tabConfig: {
         			   title: '应用类型管理'
-        	       }
-        			   
-        	   },{
-        		   html:'tttt',
-        		   tabConfig: {
-        			   title: '留存率模型管理'
-        	       }
-        			   
-        	   },{
-        		   html:'tttt',
-        		   tabConfig: {
-        			   title: '时间段活跃度设置'
-        	       }
-        			   
-        	   },{
-        		   html:'tttt',
-        		   tabConfig: {
-        			   title: '用户百分比设置'
-        	       }
-        			   
+        	       },
+        	       items:[{xtype:'appView'}]
         	   }]
            }],
            renderTo: Ext.getBody()

@@ -207,29 +207,31 @@ var utils = {
 };
 
 router.get('/', function(req, res, next) {
-
-    var jobs = [{
+    
+    //var jobs = JSON.stringify(req.body);
+    //if(!jobs instanceof Array){
+      //dummy code here
+      var jobs = [{
         pId : "ifengnews001",
         appId : 'ifeng.apk',
         planExecDate : moment().format('YYYY/MM/DD'),
         planExecPeriod : '7-22',
         newUsers: 10
-    },{
-        pId : "ganji",
-        appId : 'ganji_6.1.1.apk',
-        planExecDate : moment().format('YYYY/MM/DD'),
-        planExecPeriod : '7-22',
-        newUsers: 10
-    },{
-        pId : "kuwo",
-        appId : 'kuwo_6.6.0.apk',
-        planExecDate : moment().format('YYYY/MM/DD'),
-        planExecPeriod : '7-22',
-        newUsers: 10
-    }];
-
-//    var jobs = JSON.stringify(req.body);
-
+      },{
+          pId : "ganji",
+          appId : 'ganji_6.1.1.apk',
+          planExecDate : moment().format('YYYY/MM/DD'),
+          planExecPeriod : '7-22',
+          newUsers: 10
+      },{
+          pId : "kuwo",
+          appId : 'kuwo_6.6.0.apk',
+          planExecDate : moment().format('YYYY/MM/DD'),
+          planExecPeriod : '7-22',
+          newUsers: 10
+      }];
+    //}
+    
     function fn(req, res){
         var allTasks = [];
         jobs.forEach(function(job){

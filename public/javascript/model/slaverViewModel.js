@@ -1,7 +1,6 @@
-
 Ext.define('Salver',{
     extend: 'Ext.data.Model',
-    fields :['_id','id','name','desc','ip','mac', 'initialPercentage', 'createDate'],
+    fields :['_id','slaverMAC','slaverIP','vpnMAC','vpnIP'],
     proxy: {
         type: 'rest',
         url: 'slaver'

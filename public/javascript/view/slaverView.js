@@ -21,28 +21,20 @@ Ext.define('tm.view.SlaverView', {
         }],
         reference:'grid',
         columns: [
-            { text: '名称', dataIndex: 'name',editor:{
-                bind:'{current.name}',
+            { text: 'slaverMAC', dataIndex: 'slaverMAC',editor:{
+                bind:'{current.slaverMAC}',
                 selectOnFocus: true
             } },
-            { text: '描述', dataIndex: 'desc',editor:{
-                bind:'{current.desc}',
+            { text: 'slaverIP', dataIndex: 'slaverIP',editor:{
+                bind:'{current.slaverIP}',
                 selectOnFocus: true
             } },
-            { text: 'ip', dataIndex: 'ip',editor:{
-                bind:'{current.ip}',
+            { text: 'vpnMAC', dataIndex: 'vpnMAC',editor:{
+                bind:'{current.vpnMAC}',
                 selectOnFocus: true
             } },
-            { text: 'MAC', dataIndex:'mac',editor:{
-                bind:'{current.mac}',
-                selectOnFocus: true
-            } },
-            { text: '初始百分比', dataIndex:'initialPercentage',editor:{
-                bind:'{current.initialPercentage}',
-                selectOnFocus: true
-            } },
-            { text: '创建时间', dataIndex:'createDate',editor:{
-                bind:'{current.createDate}',
+            { text: 'vpnIP', dataIndex:'vpnIP',editor:{
+                bind:'{current.vpnIP}',
                 selectOnFocus: true
             } }, {
             	 xtype:'actioncolumn',
@@ -74,25 +66,21 @@ Ext.define('tm.view.SlaverView', {
 
         defaultType: 'textfield',
         items: [{
-            fieldLabel: 'name',
-            name: 'name',
-            bind:'{current.name}'
+            fieldLabel: 'slaverMAC',
+            name: 'slaverMAC',
+            bind:'{current.slaverMAC}'
         },{
-            fieldLabel: 'desc',
-            name: 'desc',
-            bind:'{current.desc}'
+            fieldLabel: 'slaverIP',
+            name: 'slaverIP',
+            bind:'{current.slaverIP}'
         },{
-            fieldLabel: 'ip',
-            name: 'ip',
-            bind:'{current.ip}'
+            fieldLabel: 'vpnMAC',
+            name: 'vpnMAC',
+            bind:'{current.vpnMAC}'
         },{
-            fieldLabel: 'mac',
-            name: 'mac',
-            bind:'{current.mac}'
-        },{
-            fieldLabel: 'initialPercentage',
-            name: 'initialPercentage',
-            bind:'{current.initialPercentage}'
+            fieldLabel: 'vpnIP',
+            name: 'vpnIP',
+            bind:'{current.vpnIP}'
         }],
         buttons:[{
             text:'提交',
