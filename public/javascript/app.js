@@ -5,7 +5,8 @@ Ext.require([
     'tm.ViewController',
     'tm.view.SlaverView',
     'tm.view.PhoneTypeView',
-    'tm.view.AppView'
+    'tm.view.AppView',
+    'tm.view.JobView'
 ]);
 
 Ext.application({
@@ -42,6 +43,11 @@ Ext.application({
         			   title: '应用类型管理'
         	       },
         	       items:[{xtype:'appView'}]
+        	   },{
+        		   tabConfig: {
+        			   title: '任务管理'
+        	       },
+        	       items:[{xtype:'jobView'}]
         	   }]
            }],
            renderTo: Ext.getBody()

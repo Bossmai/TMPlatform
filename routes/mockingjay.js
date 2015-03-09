@@ -200,19 +200,19 @@ router.get('/', function(req, res, next) {
     //if(!jobs instanceof Array){
       //dummy code here
       var jobs = [{
-        pId : "ifengnews001",
+        id : "ifengnews001",
         appId : 'ifeng.apk',
         planExecDate : moment().format('YYYY/MM/DD'),
         planExecPeriod : '7-22',
         newUsers: 10
       },{
-          pId : "ganji",
+          id : "ganji",
           appId : 'ganji_6.1.1.apk',
           planExecDate : moment().format('YYYY/MM/DD'),
           planExecPeriod : '7-22',
           newUsers: 10
       },{
-          pId : "kuwo",
+          id : "kuwo",
           appId : 'kuwo_6.6.0.apk',
           planExecDate : moment().format('YYYY/MM/DD'),
           planExecPeriod : '7-22',

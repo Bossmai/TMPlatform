@@ -12,6 +12,7 @@ var express = require('express'),
 	slaver = require('./routes/slaver'),
     phoneType = require('./routes/phoneType');
 	application = require('./routes/application');
+	job = require('./routes/job');
     mockingjay = require('./routes/mockingjay');
 
 var app = express();
@@ -41,6 +42,7 @@ app.use('/task', task);
 app.use('/slaver', slaver);
 app.use('/phoneType', phoneType);
 app.use('/app', application);
+app.use('/job', job);
 app.use('/mockingjay', mockingjay);
 
 // catch 404 and forward to error handler
