@@ -196,37 +196,14 @@ var utils = {
 
 router.get('/', function(req, res, next) {
     
-    //var jobs = JSON.stringify(req.body);
-    //if(!jobs instanceof Array){
-      //dummy code here
-      var jobs = [{
-        id : "ifengnews001",
-        appId : 'ifeng.apk',
-        planExecDate : moment().format('YYYY/MM/DD'),
-        planExecPeriod : '7-22',
-        newUsers: 10
-      },{
-          id : "ganji",
-          appId : 'ganji_6.1.1.apk',
-          planExecDate : moment().format('YYYY/MM/DD'),
-          planExecPeriod : '7-22',
-          newUsers: 10
-      },{
-          id : "kuwo",
-          appId : 'kuwo_6.6.0.apk',
-          planExecDate : moment().format('YYYY/MM/DD'),
-          planExecPeriod : '7-22',
-          newUsers: 10
-      }];
-    //}
-    
+    var job = req.query;
+    if(job === null || job === {}) {
+        return;
+    }
+
     function fn(req, res){
         var allTasks = [];
-        jobs.forEach(function(job){
-            var tasks = utils.generateTasks(job);
-            allTasks = allTasks.concat(tasks);
-        });
-        allTasks.forEach(function(d){
+        utils.generateTasks(job).forEach(function(d){
             req.db.get('task').insert(d);
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');

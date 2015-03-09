@@ -5,7 +5,7 @@ Ext.require([
 Ext.define('tm.view.JobView', {
 	extend: 'Ext.container.Container',
 	alias:'widget.jobView',
-	controller: Ext.create('tm.ViewController'),
+	controller: Ext.create('tm.JobViewController'),
 	viewModel: {
         type: 'jobs'
     },
@@ -41,7 +41,7 @@ Ext.define('tm.view.JobView', {
                 bind:'{current.newUsers}',
                 selectOnFocus: true
             } },
-            { text: 'status', dataIndex: 'status'},
+            { text: 'status', dataIndex: '_status'},
             {
             	 xtype:'actioncolumn',
             	 items: [{
@@ -49,6 +49,16 @@ Ext.define('tm.view.JobView', {
                      tooltip: 'Delete',
                      selectOnFocus: true,
                      handler: 'onDelete'
+                 },{
+                     icon: '/img/go.png',
+                     tooltip: 'go',
+                     selectOnFocus: true,
+                     handler: 'onGo'
+                 },{
+                     icon: '/img/hold.png',
+                     tooltip: 'hold',
+                     selectOnFocus: true,
+                     handler: 'onHold'
                  }]
             }
         ],
@@ -58,7 +68,6 @@ Ext.define('tm.view.JobView', {
         tbar:['任务列表','->',{
             text:'新增',
             handler: 'onAdd'
-        
         }]
 	},{
 		xtype:'form',
@@ -91,6 +100,10 @@ Ext.define('tm.view.JobView', {
             fieldLabel: 'newUsers',
             name: 'newUsers',
             bind:'{current.newUsers}'
+        },{
+            fieldLabel: 'status',
+            name: '_status',
+            bind:'{current._status}'
         }],
         buttons:[{
             text:'提交',
