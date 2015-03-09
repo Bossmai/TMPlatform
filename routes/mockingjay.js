@@ -12,26 +12,14 @@ var utils = {
         var me = this;
         req.db.get('slaver').find({}, function(err, docs) {
             me.slaverList = docs;
-            me.appList = [{
-                id: 'ifeng.apk',
-                "scriptName" : "ifeng",
-                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
-            },{
-                "id" : "ganji_6.1.1.apk",
-                "scriptName" : "ganji_6.1.1",
-                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
-            },{
-                "id" : "kuwo_6.6.0.apk",
-                "scriptName" : "kuwo_6.6.0_test",
-                lcModel : [45,44,43,42,41,41,41,41,41,41,41,41,41,41,41]
-            }];
-
-            //TODO need add sort by percent;
-            req.db.get('phoneType').find({},{sort:{percent:-1}}, function(err, docs) {
-                me.phoneTypeList = docs;
-                fn(req, res);
+            req.db.get('app').find({}, function(err, docs) {
+            	me.appList =docs
+            	req.db.get('phoneType').find({},{sort:{percent:-1}}, function(err, docs) {
+                    me.phoneTypeList = docs;
+                    fn(req, res);
+                });
             });
-        });
+         });
     },
 
     random : function(max){
@@ -162,9 +150,9 @@ var utils = {
 
     getLCModel : function(jobId){
         var me = this;
-        return me.appList.filter(function(d){
+        return JSON.stringify(me.appList.filter(function(d){
             return d.id === jobId
-        })[0]['lcModel'];
+        })[0]['lcModel']).split(",");
     },
 
     getSubList : function(taskList, endIndex, dayIndex){
@@ -197,9 +185,9 @@ var utils = {
                 taskList.push(task);
             }
         });
-
+        
         me.getLCModel(job.appId).forEach(function(percent, dayIndex){
-            var list = me.getSubList(taskList, Math.ceil(percent * job.newUsers/100), dayIndex);
+            var list = me.getSubList(taskList, Math.ceil(parseFloat(percent) * job.newUsers/100), dayIndex);
             taskList = taskList.concat(list);
         });
         return taskList;

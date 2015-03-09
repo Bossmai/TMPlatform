@@ -95,10 +95,6 @@ Ext.define('tm.view.PhoneTypeView', {
         defaults: {
             anchor: '100%'
         },
-        
-        //{ "_id" : { "$oid" : "54fd35108880f1838a565aa8" }, "MANUFACTURER" BRAND" : "HTC", "HARDWARE" : "HTC", "MODEL" : "T328w", "PRODUCT" : "T328w", "DEVICE" : "HTC-T328w", "mac6" : "22:32:11", "fac" : "04", "tac" : "353614", "mnc" : "02", "percent" : 0.98 }
-      //序号	厂商编号	厂商名称	机型	分辨率	占有率	TAC	产地1	产地2	MAC6	品牌	网	配置文件	创建时间
-      //'_id','id','companyId','companyName','type','display', 'percentage', 'TAC', 'madeIn', 'madeIn2', 'mac', 'brand', 'network', 'configFile', 'createDate'
         defaultType: 'textfield',
         items: [{
             fieldLabel: 'MANUFACTURER',

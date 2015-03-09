@@ -3,7 +3,7 @@ Ext.define('App',{
     fields :['_id','id','scriptName','lcModel'],
     proxy: {
         type: 'rest',
-        url: 'slaver'
+        url: 'app'
     },
     requires: ['Ext.data.identifier.Uuid'],
     identifier: 'uuid'
