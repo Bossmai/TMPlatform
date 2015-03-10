@@ -14,7 +14,7 @@ Ext.define('tm.JobViewController',{
             return;
         }
         Ext.Ajax.request({
-            url:'http://localhost:3000/mockingjay',
+            url:'/mockingjay',
             params : target.data,
             method: 'get',
             success: function(response){
