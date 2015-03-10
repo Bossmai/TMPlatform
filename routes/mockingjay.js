@@ -140,11 +140,7 @@ var utils = {
         })[0];
         return {
             "appId" : appId,
-            "packageName" : app.packageName,
-            "appName" : app.packageName,
-            "appType" : app.appType,
-            "scriptName" : app.scriptName,
-            "scriptType" : app.scriptType
+            "scriptName" : app.scriptName
         };
     },
 
