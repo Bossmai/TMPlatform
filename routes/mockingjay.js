@@ -146,15 +146,15 @@ var utils = {
 
     getLCModel : function(jobId){
         var me = this;
-        return JSON.stringify(me.appList.filter(function(d){
+        return me.appList.filter(function(d){
             return d.id === jobId
-        })[0]['lcModel']).split(",");
+        })[0]['lcModel'].split(",");
     },
 
     getSubList : function(taskList, endIndex, dayIndex){
         var result =  JSON.parse(JSON.stringify(taskList.slice(0, endIndex)));
         result.forEach(function(d){
-            var planExecDate = moment(d.planExecDate);
+            var planExecDate = moment(d.planExecDate, 'YYYY/MM/DD');
             d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY/MM/DD');
             d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1)
         });
@@ -164,12 +164,16 @@ var utils = {
     generateTasks : function(job){
         var me = this;
         var taskList = [];
+        var usersToCreate = parseFloat(job.newUsers);
         me.phoneTypeList.forEach(function(_phone, index){
-            var count = Math.ceil(_phone.percent /100 * job.newUsers);
+            if(taskList.length > usersToCreate){
+                return;
+            }
+            var count = Math.ceil(_phone.percent /100 * usersToCreate);
             for(var i=0; i< count; i++){
                 var task = {
                     id: job.appId + _phone.MODEL + '_' + i + '_0',
-                    jobId : job.pId,
+                    jobId : job.appId,
                     planExecDate : job.planExecDate,
                     planExecPeriod : job.planExecPeriod,
                     status : "NONE",
@@ -183,7 +187,7 @@ var utils = {
         });
         
         me.getLCModel(job.appId).forEach(function(percent, dayIndex){
-            var list = me.getSubList(taskList, Math.ceil(parseFloat(percent) * job.newUsers/100), dayIndex);
+            var list = me.getSubList(taskList, Math.ceil(parseFloat(percent) * usersToCreate/100), dayIndex);
             taskList = taskList.concat(list);
         });
         return taskList;
