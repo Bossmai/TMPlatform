@@ -1,5 +1,6 @@
 var express = require('express'),
-	router = express.Router();
+	router = express.Router(),
+    moment = require('moment');
 
 /**
  * fetch task list 
@@ -58,31 +59,67 @@ router.delete('/:id', function(req, res, next) {
  */
 router.get('/getnew', function(req, res, next) {
 	
-	var ret = [];
-	var query = {
-        status:'NONE'
-    };
-    if(req.query.slaverMAC){
-        query["slaver.slaverMAC"] = req.query.slaverMAC;
+	var ret = [],
+        today = moment().format('YYYY/MM/DD'),
+        querySq =[{
+            //请求今日留存未做
+            'planExecDate' : today,
+           'appRunner.scriptType' : "REPEAT",
+            'status' : 'NONE'
+        },{
+            //请求今日留存失败 NOT_BUILT
+            'planExecDate' : today,
+            'appRunner.scriptType' : "REPEAT",
+            'status' : 'NOT_BUILT'
+        },{
+            //请求今日留存失败 FAILURE
+            'planExecDate' : today,
+           'appRunner.scriptType' : "REPEAT",
+            'status' : 'FAILURE'
+        },{
+            //请求今日新增未做
+            'planExecDate' : today,
+           'appRunner.scriptType' : "NEW",
+            'status' : 'NONE'
+        },{
+            //请求今日新增失败 NOT_BUILT
+            'planExecDate' : today,
+           'appRunner.scriptType' : "NEW",
+            'status' : 'NOT_BUILT'
+        },{
+            //请求今日新增失败 FAILURE
+            'planExecDate' : today,
+           'appRunner.scriptType' : "NEW",
+            'status' : 'FAILURE'
+        }],
+        queryIndex = 0;
+
+    function queryDB(){
+        if(req.query.slaverMAC){
+            querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
+        }
+        req.db.get('task').find(querySq[queryIndex], { stream: true, limit: 15-ret.length })
+            .each(function(doc){
+                ret.push(doc);
+                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
+            })
+            .success(function(oc){
+                if(ret.length < 15 && queryIndex < querySq.length-1){
+                    queryIndex ++;
+                    queryDB();
+                }else{
+                    res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                    res.send(ret);
+                }
+            })
+            .error(function(err){
+                res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                res.send(err);
+            });
+
+
     }
-    if(req.query.planExecDate){
-        query.planExecDate = req.query.planExecDate;
-    }
-    req.db.get('task').find(query, { stream: true, limit:req.query.limit || 15 })
-    .each(function(doc){
-    	ret.push(doc);
-    	req.db.get('task').update({id: doc.id},{$set:{status:'INPROGRESS'}})
-    })
-    .error(function(err){
-    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
-        res.send(err);
-    })
-    .success(function(){
-    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
-        res.send(ret);
-    });
-    
-    
+    queryDB();
 });
 
 module.exports = router;
