@@ -67,31 +67,22 @@ router.get('/getnew', function(req, res, next) {
            'appRunner.scriptType' : "REPEAT",
             'status' : 'NONE'
         },{
-            //请求今日留存失败 NOT_BUILT
-            'planExecDate' : today,
-            'appRunner.scriptType' : "REPEAT",
-            'status' : 'NOT_BUILT'
-        },{
-            //请求今日留存失败 FAILURE
+            //请求今日留存失败
             'planExecDate' : today,
            'appRunner.scriptType' : "REPEAT",
-            'status' : 'FAILURE'
+            'status' : {'$in' :['FAILURE','NOT_BUILT']}
         },{
             //请求今日新增未做
             'planExecDate' : today,
            'appRunner.scriptType' : "NEW",
             'status' : 'NONE'
         },{
-            //请求今日新增失败 NOT_BUILT
+            //请求今日新增失败
             'planExecDate' : today,
            'appRunner.scriptType' : "NEW",
-            'status' : 'NOT_BUILT'
-        },{
-            //请求今日新增失败 FAILURE
-            'planExecDate' : today,
-           'appRunner.scriptType' : "NEW",
-            'status' : 'FAILURE'
+            'status' : {'$in' :['FAILURE','NOT_BUILT']}
         }],
+
         queryIndex = 0;
 
     function queryDB(){
