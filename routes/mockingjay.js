@@ -140,7 +140,8 @@ var utils = {
         })[0];
         return {
             "appId" : appId,
-            "scriptName" : app.scriptName
+            "scriptName" : app.scriptName,
+            "scriptType": "NEW"
         };
     },
 
@@ -156,7 +157,8 @@ var utils = {
         result.forEach(function(d){
             var planExecDate = moment(d.planExecDate, 'YYYY/MM/DD');
             d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY/MM/DD');
-            d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1)
+            d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1);
+            d.appRunner.scriptType = "REPEAT";
         });
         return result;
     },
