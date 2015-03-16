@@ -98,7 +98,7 @@ router.get('/getnew', function(req, res, next) {
 	                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
 	            })
 	            .success(function(oc){
-	                if(ret.length < 15 && queryIndex < querySq.length-1){
+	                if(ret.length < (req.query.limit || 15 ) && queryIndex < querySq.length-1){
 	                    queryIndex ++;
 	                    queryDB();
 	                }else{
