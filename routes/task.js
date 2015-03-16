@@ -62,25 +62,25 @@ router.get('/getnew', function(req, res, next) {
 	var ret = [],
         today = moment().format('YYYY/MM/DD'),
         querySq =[{
+            //请求今日留存失败
+            'planExecDate' : today,
+            'appRunner.scriptType' : "REPEAT",
+            'status' : {'$in' :['FAILURE','NOT_BUILT']}
+        },{
             //请求今日留存未做
             'planExecDate' : today,
            'appRunner.scriptType' : "REPEAT",
             'status' : 'NONE'
         },{
-            //请求今日留存失败
+            //请求今日新增失败
             'planExecDate' : today,
-           'appRunner.scriptType' : "REPEAT",
+            'appRunner.scriptType' : "NEW",
             'status' : {'$in' :['FAILURE','NOT_BUILT']}
         },{
             //请求今日新增未做
             'planExecDate' : today,
            'appRunner.scriptType' : "NEW",
             'status' : 'NONE'
-        },{
-            //请求今日新增失败
-            'planExecDate' : today,
-           'appRunner.scriptType' : "NEW",
-            'status' : {'$in' :['FAILURE','NOT_BUILT']}
         }],
 
         queryIndex = 0;

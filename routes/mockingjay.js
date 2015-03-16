@@ -13,7 +13,7 @@ var utils = {
         req.db.get('slaver').find({}, function(err, docs) {
             me.slaverList = docs;
             req.db.get('app').find({}, function(err, docs) {
-            	me.appList =docs
+            	me.appList =docs;
             	req.db.get('phoneType').find({},{sort:{percent:-1}}, function(err, docs) {
                     me.phoneTypeList = docs;
                     fn(req, res);
