@@ -89,26 +89,28 @@ router.get('/getnew', function(req, res, next) {
         if(req.query.slaverMAC){
             querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
         }
-        req.db.get('task').find(querySq[queryIndex], { stream: true, limit: (req.query.limit || 15 ) - ret.length })
-            .each(function(doc){
-                ret.push(doc);
-                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
-            })
-            .success(function(oc){
-                if(ret.length < 15 && queryIndex < querySq.length-1){
-                    queryIndex ++;
-                    queryDB();
-                }else{
-                    res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                    res.send(ret);
-                }
-            })
-            .error(function(err){
-                res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                res.send(err);
-            });
-
-
+        
+        var limit = (req.query.limit || 15 ) - ret.length;
+        if (limit > 0) {
+        	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit })
+	            .each(function(doc){
+	                ret.push(doc);
+	                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
+	            })
+	            .success(function(oc){
+	                if(ret.length < 15 && queryIndex < querySq.length-1){
+	                    queryIndex ++;
+	                    queryDB();
+	                }else{
+	                    res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	                    res.send(ret);
+	                }
+	            })
+	            .error(function(err){
+	                res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	                res.send(err);
+	            });
+        }
     }
     queryDB();
 });
