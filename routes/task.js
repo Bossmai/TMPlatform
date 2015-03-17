@@ -110,7 +110,7 @@ router.get('/getnew', function(req, res, next) {
         	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit - ret.length})
 	            .each(function(doc){
 	                ret.push(doc);
-	                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
+	                req.db.get('task').update({_id: doc._id},{$set:{'status':'INPROGRESS'}})
 	            })
 	            .success(function(){
 	                if(ret.length === limit){
