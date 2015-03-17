@@ -91,8 +91,12 @@ router.get('/getnew', function(req, res, next) {
 		request('http://'+req.headers.host+'/mockingjay/all', function(_req, _res){
 			console.log(_res.body);
 			if(_res.body === "NO_DATA"){
-				res.status(500).end();
-				return;
+				if(ret.length > 0){
+					res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	                res.send(ret);
+				}else{
+					res.status(500).end();
+				}
 			}else{
 				queryDB();
 			}
