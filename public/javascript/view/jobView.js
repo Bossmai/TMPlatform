@@ -51,11 +51,16 @@ Ext.define('tm.view.JobView', {
                      handler: 'onDelete'
                  },{
                      icon: '/img/go.png',
+                     tooltip: 'generate new',
+                     selectOnFocus: true,
+                     handler: 'onGenerateNew'
+                 },{
+                     icon: '/img/go.png',
                      tooltip: 'go',
                      selectOnFocus: true,
                      handler: 'onGo'
                  },{
-                     icon: '/img/hold.png',
+                     icon: '/img/go.png',
                      tooltip: 'hold',
                      selectOnFocus: true,
                      handler: 'onHold'

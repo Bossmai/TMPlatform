@@ -88,9 +88,15 @@ router.get('/getnew', function(req, res, next) {
 	
 	
 	function generateNew(){
-		console.log(req.headers.host);
-		request('http://'+req.headers.host+'/mockingjay/all', function(req, res){
-			queryDB();
+		request('http://'+req.headers.host+'/mockingjay/all', function(_req, _res){
+			console.log(_res.body);
+			if(_res.body === "NO_DATA"){
+				res.status(500).end();
+				return;
+			}else{
+				queryDB();
+			}
+			
 		});
 	}
 	
@@ -122,6 +128,7 @@ router.get('/getnew', function(req, res, next) {
 	            })
 	            .error(function(err){
 	                res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	                res.status(500)
 	                res.send(err);
 	            });
         }

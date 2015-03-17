@@ -5,16 +5,13 @@ Ext.define('tm.JobViewController',{
     onAdd: function(){
     	var me = this;
 		var store = this.getViewModel().getStore('data');
-		store.add({_status: 'NEW'});
+		store.add({_status: 'GO'});
     },
 
     onGo: function(view, rowIndex, colIndex, item, e, record ){
         var target = record;
-        if(target.data.status === "GO"){
-            return;
-        }
         Ext.Ajax.request({
-            url:'/mockingjay',
+            url:'/mockingjay/go',
             params : target.data,
             method: 'get',
             success: function(response){
@@ -24,7 +21,30 @@ Ext.define('tm.JobViewController',{
             }
         })
     },
-    onHold: function(){
-        return false;
+    
+    onHold: function(view, rowIndex, colIndex, item, e, record){
+    	var target = record;
+        Ext.Ajax.request({
+            url:'/mockingjay/hold',
+            params : target.data,
+            method: 'get',
+            success: function(response){
+                alert('done!');
+                target.set('_status', 'HOLD');
+                target.save();
+            }
+        })
+    },
+    
+    onGenerateNew: function(view, rowIndex, colIndex, item, e, record){
+    	var target = record;
+        Ext.Ajax.request({
+            url:'/mockingjay',
+            params : target.data,
+            method: 'get',
+            success: function(response){
+                alert('done!');
+            }
+        })
     }
 });
