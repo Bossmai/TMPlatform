@@ -218,7 +218,7 @@ router.get('/all', function(req, res, next) {
 	console.log('generate tasks for all jobs');
 	var count = 0;
     function fn(req, res){
-        req.db.get('job').find({status: 'GO'}, { stream: true})
+        req.db.get('job').find({_status: 'GO'}, { stream: true})
 	    .each(function(job){
 	    	count++;
 	    	utils.generateTasks(job).forEach(function(d){

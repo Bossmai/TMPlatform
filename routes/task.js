@@ -105,7 +105,7 @@ router.get('/getnew', function(req, res, next) {
             querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
         }
         
-        var limit = req.query.limit || 15;
+        var limit = parseFloat(req.query.limit) || 15;
         if (limit > 0) {
         	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit - ret.length})
 	            .each(function(doc){
