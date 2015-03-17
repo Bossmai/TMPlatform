@@ -176,7 +176,7 @@ var utils = {
                 var task = {
                     id: job.appId + _phone.MODEL + '_' + i + '_0',
                     jobId : job.appId,
-                    planExecDate : job.planExecDate,
+                    planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
                     planExecPeriod : job.planExecPeriod,
                     status : "NONE",
                     phone: me.getPhone(_phone),
@@ -210,6 +210,28 @@ router.get('/', function(req, res, next) {
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
         res.send(allTasks);
+    }
+    utils.init(req ,res, fn);
+});
+
+router.get('/all', function(req, res, next) {
+	console.log('generate tasks for all jobs');
+    function fn(req, res){
+        req.db.get('job').find({}, { stream: true})
+	    .each(function(job){
+	    	utils.generateTasks(job).forEach(function(d){
+	            req.db.get('task').insert(d);
+	        });
+	    })
+	    .success(function(){
+	    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	        res.send('DONE');
+	    })
+	    .error(function(err){
+	        res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	        res.send(err);
+	    });
+        
     }
     utils.init(req ,res, fn);
 });

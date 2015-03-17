@@ -1,6 +1,7 @@
 var express = require('express'),
 	router = express.Router(),
-    moment = require('moment');
+    moment = require('moment'),
+    request = require('request');
 
 /**
  * fetch task list 
@@ -84,26 +85,39 @@ router.get('/getnew', function(req, res, next) {
         }],
 
         queryIndex = 0;
-
+	
+	
+	function generateNew(){
+		console.log(req.headers.host);
+		request('http://'+req.headers.host+'/mockingjay/all', function(req, res){
+			queryDB();
+		});
+	}
+	
     function queryDB(){
         if(req.query.slaverMAC){
             querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
         }
         
-        var limit = (req.query.limit || 15 ) - ret.length;
+        var limit = req.query.limit || 15;
         if (limit > 0) {
-        	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit })
+        	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit - ret.length})
 	            .each(function(doc){
 	                ret.push(doc);
 	                req.db.get('task').update({id: doc.id},{$set:{'status':'INPROGRESS'}})
 	            })
-	            .success(function(oc){
-	                if(ret.length < (req.query.limit || 15 ) && queryIndex < querySq.length-1){
-	                    queryIndex ++;
-	                    queryDB();
-	                }else{
-	                    res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	                    res.send(ret);
+	            .success(function(){
+	                if(ret.length === limit){
+	                	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+		                res.send(ret);
+	                } else{
+	                	if(queryIndex < querySq.length-1){
+	                		queryIndex ++;
+	                		queryDB(); 
+	                	}else{
+	                		console.log("no task, generate new");
+	                		generateNew();
+	                	}
 	                }
 	            })
 	            .error(function(err){
