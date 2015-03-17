@@ -91,12 +91,8 @@ router.get('/getnew', function(req, res, next) {
 		request('http://'+req.headers.host+'/mockingjay/all', function(_req, _res){
 			console.log(_res.body);
 			if(_res.body === "NO_DATA"){
-				if(ret.length > 0){
-					res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	                res.send(ret);
-				}else{
-					res.status(500).end();
-				}
+				res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                res.send(ret);
 			}else{
 				queryDB();
 			}
@@ -132,8 +128,7 @@ router.get('/getnew', function(req, res, next) {
 	            })
 	            .error(function(err){
 	                res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	                res.status(500)
-	                res.send(err);
+	                res.send(ret);
 	            });
         }
     }
