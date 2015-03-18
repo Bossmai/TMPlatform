@@ -112,7 +112,7 @@ var utils = {
         var validation = 0;
         result.split('').forEach(function (d, i) {
             var temp = parseInt(d);
-            if (i % 2 === 0) {
+            if (i % 2 === 1) {
                 temp = temp * 2;
                 validation += (Math.floor(temp / 10) + temp % 10);
             } else {
