@@ -53,6 +53,26 @@ router.delete('/:id', function(req, res, next) {
         });
 });
 
+/**
+ * delete single task
+ */
+router.get('/resetAbort', function(req, res, next) {
+	console.log(req.query.slaverMAC);
+    req.db.get('task').update({
+    		'slaver.slaverMAC':req.query.slaverMAC,
+    		'status':'INPROGRESS'
+    	},
+        {$set: {'status':'NONE'}},
+        function(err, docs) {
+            if (err) {
+                res.status(500);
+                return;
+            }
+            res.setHeader('Content-Type', 'application/json;charset=utf-8');
+            res.status(200);
+            res.send("{status: 'OK'}");
+        });
+});
 
 
 /**

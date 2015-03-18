@@ -1,6 +1,7 @@
 var express = require('express'),
     router = express.Router(),
-    moment = require('moment');
+    moment = require('moment'),
+    uuid = require('node-uuid');
 
 var utils = {
     slaverList : undefined,
@@ -174,7 +175,7 @@ var utils = {
             var count = Math.ceil(_phone.percent /100 * usersToCreate);
             for(var i=0; i< count; i++){
                 var task = {
-                    id: job.appId + _phone.MODEL + '_' + i + '_0',
+                    id: job.appId + _phone.MODEL + '_' + i + '_0'+uuid.v1(),
                     jobId : job.id,
                     planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
                     planExecPeriod : job.planExecPeriod,
