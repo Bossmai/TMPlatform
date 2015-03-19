@@ -1,10 +1,10 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
-1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli [ 'D:\\work_area\\nodejs\\\\node.exe',
+1 verbose cli   'D:\\work_area\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
 1 verbose cli   'start' ]
-2 info using npm@1.4.3
-3 info using node@v0.10.26
-4 verbose node symlink C:\Program Files\nodejs\\node.exe
+2 info using npm@1.4.28
+3 info using node@v0.10.36
+4 verbose node symlink D:\work_area\nodejs\\node.exe
 5 verbose run-script [ 'prestart', 'start', 'poststart' ]
 6 info prestart TMPlatform@0.0.0
 7 info start TMPlatform@0.0.0
@@ -21,9 +21,9 @@
 11 error     npm owner ls TMPlatform
 11 error There is likely additional logging output above.
 12 error System Windows_NT 6.1.7601
-13 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "start"
+13 error command "D:\\work_area\\nodejs\\\\node.exe" "D:\\work_area\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "start"
 14 error cwd D:\workspace\TMPlatform
-15 error node -v v0.10.26
-16 error npm -v 1.4.3
+15 error node -v v0.10.36
+16 error npm -v 1.4.28
 17 error code ELIFECYCLE
 18 verbose exit [ 1, true ]

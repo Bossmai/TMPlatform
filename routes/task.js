@@ -86,22 +86,26 @@ router.get('/getnew', function(req, res, next) {
             //请求今日留存失败
             'planExecDate' : today,
             'appRunner.scriptType' : "REPEAT",
-            'status' : {'$in' :['FAILURE','NOT_BUILT']}
+            'status' : {'$in' :['FAILURE','NOT_BUILT']},
+            'isHold' : false
         },{
             //请求今日留存未做
             'planExecDate' : today,
            'appRunner.scriptType' : "REPEAT",
-            'status' : 'NONE'
+            'status' : 'NONE',
+            'isHold' : false
         },{
             //请求今日新增失败
             'planExecDate' : today,
             'appRunner.scriptType' : "NEW",
-            'status' : {'$in' :['FAILURE','NOT_BUILT']}
+            'status' : {'$in' :['FAILURE','NOT_BUILT']},
+            'isHold' : false
         },{
             //请求今日新增未做
             'planExecDate' : today,
            'appRunner.scriptType' : "NEW",
-            'status' : 'NONE'
+            'status' : 'NONE',
+            'isHold' : false
         }],
 
         queryIndex = 0;

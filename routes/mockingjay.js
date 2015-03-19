@@ -113,7 +113,7 @@ var utils = {
         var validation = 0;
         result.split('').forEach(function (d, i) {
             var temp = parseInt(d);
-            if (i % 2 === 0) {
+            if (i % 2 === 1) {
                 temp = temp * 2;
                 validation += (Math.floor(temp / 10) + temp % 10);
             } else {
@@ -177,6 +177,7 @@ var utils = {
                 var task = {
                     id: job.appId + _phone.MODEL + '_' + i + '_0'+uuid.v1(),
                     jobId : job.id,
+                    isHold: false,
                     planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
                     planExecPeriod : job.planExecPeriod,
                     status : "NONE",
@@ -247,7 +248,7 @@ router.get('/all', function(req, res, next) {
 
 router.get('/hold', function(req, res, next) {
 	req.db.get('task').options.multi = true;
-    req.db.get('task').update({jobId: req.query.id},{$set: {status: 'HOLD'}}, function(){
+    req.db.get('task').update({jobId: req.query.id},{$set: {isHold: true}}, function(){
     	res.setHeader('Content-Type', 'application/json;charset=utf-8');
         res.send('DONE');
     })
@@ -257,7 +258,7 @@ router.get('/hold', function(req, res, next) {
 
 router.get('/go', function(req, res, next) {
 	req.db.get('task').options.multi = true;
-    req.db.get('task').update({jobId: req.query.id},{$set: {status: 'NONE'}}, function(){
+    req.db.get('task').update({jobId: req.query.id},{$set: {isHold: false}}, function(){
     	res.setHeader('Content-Type', 'application/json;charset=utf-8');
         res.send('DONE');
     })
