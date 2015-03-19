@@ -17,6 +17,7 @@
     "monk":"*",
     "moment": "*",
     "request": "*",
-    "node-uuid" : "*"
+    "node-uuid" : "*",
+    "mongojs" : "*"
   }
 }

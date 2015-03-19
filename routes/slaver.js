@@ -7,7 +7,7 @@ var express = require('express'),
  * fetch slaver list 
  */
 router.get('/', function(req, res, next) {
-	console.log('slaver.get.start');
+	//console.log('slaver.get.start' + JSON.stringify(req.db.get('slaver')));
     req.db.get('slaver').find(
         {},//req.query,
         function(err, docs) {

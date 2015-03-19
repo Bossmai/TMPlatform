@@ -6,7 +6,8 @@ Ext.require([
     'tm.view.SlaverView',
     'tm.view.PhoneTypeView',
     'tm.view.AppView',
-    'tm.view.JobView'
+    'tm.view.JobView',
+    'tm.view.ReportView',
 ]);
 
 Ext.application({
@@ -48,6 +49,11 @@ Ext.application({
         			   title: '任务管理'
         	       },
         	       items:[{xtype:'jobView'}]
+        	   },{
+        		   tabConfig: {
+        			   title: '状态图'
+        	       },
+        	       items:[{xtype:'reportView'}]
         	   }]
            }],
            renderTo: Ext.getBody()

@@ -14,6 +14,7 @@ var express = require('express'),
 	application = require('./routes/application');
 	job = require('./routes/job');
     mockingjay = require('./routes/mockingjay');
+    report = require('./routes/report');
 
 var app = express();
 db.options.multi = true;
@@ -44,6 +45,7 @@ app.use('/phoneType', phoneType);
 app.use('/app', application);
 app.use('/job', job);
 app.use('/mockingjay', mockingjay);
+app.use('/report', report);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
