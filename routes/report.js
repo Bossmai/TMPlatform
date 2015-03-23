@@ -1,37 +1,42 @@
 var mongojs = require('mongojs'),
 	express = require('express'),
 	router = express.Router(),
-	db = mongojs.connect('localhost:27017/test', ['task']);
+	db = mongojs.connect('localhost:27017/test', ['task', 'temp']);
 
 router.get('/', function(req, res, next) {
-//	var jobId = req.query.jobId;
 	var mapper = function () {
-//		if((jobId && (this.jobId===jobId)) || !jobId){
 			emit(this.planExecDate, {
 	            status: this.status,
 	            scriptType: this.appRunner.scriptType
 	        });
-//		} 
+
     };
 
     var reducer = function (key, values) {
+    	
+    	if(values[0].date){
+    		return values[0];
+    	}
+    	
+    	
         var ret = {
-        	planExecDate : key,
+        	date : key,
         	newCount : 0,
         	newSuccessCount :0,
         	repeatCount: 0,
         	repeatSuccessCount:0
         };
+        
         values.forEach(function(d){
         	if(d.scriptType==='NEW'){
-        		ret.newCount++;
+        		ret.newCount ++;
         		if(d.status==="SUCCESS"){
-        			ret.newSuccessCount++;
+        			ret.newSuccessCount ++;
         		}
-        	}else{
-        		ret.repeatCount++;
+        	}else if(d.scriptType==='REPEAT') {
+        		ret.repeatCount ++;
         		if(d.status==="SUCCESS"){
-        			ret.repeatSuccessCount++;
+        			ret.repeatSuccessCount ++;
         		}
         	}
         })
@@ -42,7 +47,7 @@ router.get('/', function(req, res, next) {
     db.task.mapReduce(
         mapper,
         reducer, {
-            out: {replace:'tempCollctions'}
+            out: 'temp'
         },
         function(err, collection){
         	if(err){

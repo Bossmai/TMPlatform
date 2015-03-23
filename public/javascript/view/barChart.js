@@ -33,13 +33,11 @@ Ext.define('tm.view.BarChart', {
 			.attr("width", 400)
 			.attr("height", 300);
 		
-		svg.append("g")
-			.attr("class", "chart-body")
+		svg.selectAll('bar')
 			.data(me.data)
 			.enter()
-			.append("g")
-			append("rect")
-			.attr("class", "clickable eid-refinement-link")
+			.append("rect")
+			.attr("class", "bar")
 			.attr("x", function(d) {
 				return xScale(d._id); 
 			})
@@ -51,9 +49,9 @@ Ext.define('tm.view.BarChart', {
 		    	return 10;
 		    });
 		
-		svg.append("g")
-			.attr("class", "x axis")
-			.call(me.xAxis);
+//		svg.append("g")
+//			.attr("class", "x axis")
+//			.call(me.xAxis);
 		
 	}
 
