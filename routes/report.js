@@ -13,21 +13,24 @@ router.get('/', function(req, res, next) {
     };
 
     var reducer = function (key, values) {
-    	
-    	if(values[0].date){
-    		return values[0];
-    	}
-    	
-    	
+
+
         var ret = {
-        	date : key,
-        	newCount : 0,
-        	newSuccessCount :0,
-        	repeatCount: 0,
-        	repeatSuccessCount:0
+            date : key,
+            newCount : 0,
+            newSuccessCount :0,
+            repeatCount: 0,
+            repeatSuccessCount:0
         };
-        
-        values.forEach(function(d){
+
+    	values.forEach(function(d){
+            if(d.date){
+                ret.newCount += d.newCount;
+                ret.newSuccessCount += d.newSuccessCount;
+                ret.repeatCount += d.repeatCount;
+                ret.repeatSuccessCount += d.repeatSuccessCount;
+                return;
+            }
         	if(d.scriptType==='NEW'){
         		ret.newCount ++;
         		if(d.status==="SUCCESS"){
