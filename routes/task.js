@@ -1,4 +1,4 @@
-var express = require('express'),
+﻿var express = require('express'),
 	router = express.Router(),
     moment = require('moment'),
     request = require('request');
@@ -107,46 +107,51 @@ router.get('/getnew', function(req, res, next) {
             'status' : 'NONE',
             'isHold' : false
         }],
+        limit = parseFloat(req.query.limit) || 15;
 
-        queryIndex = 0;
-	
-	
-	function generateNew(){
-		request('http://'+req.headers.host+'/mockingjay/all', function(_req, _res){
+	function generateNew(d){
+		request('http://'+req.headers.host+'/mockingjay',{
+            qs: d.job
+        }, function(_req, _res){
 			console.log(_res.body);
 			if(_res.body === "NO_DATA"){
 				res.setHeader('Content-Type', 'application/json;charset=utf-8');
                 res.send(ret);
 			}else{
-				queryDB();
+				queryDB(d);
 			}
 			
 		});
 	}
 	
-    function queryDB(){
+    function queryDB(d){
         if(req.query.slaverMAC){
             querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
         }
-        
-        var limit = parseFloat(req.query.limit) || 15;
+
         if (limit > 0) {
-        	req.db.get('task').find(querySq[queryIndex], { stream: true, limit: limit - ret.length})
+            var query = querySq[d.queryIndex];
+            query.jobId = d.job.id;
+        	req.db.get('task').find(query, { stream: true, limit: d._length - d.ret.length})
 	            .each(function(doc){
-	                ret.push(doc);
+                    d.ret.push(doc);
 	                req.db.get('task').update({_id: doc._id},{$set:{'status':'INPROGRESS'}})
 	            })
 	            .success(function(){
-	                if(ret.length === limit){
-	                	res.setHeader('Content-Type', 'application/json;charset=utf-8');
-		                res.send(ret);
+	                if(d.ret.length === d._length){
+                        ret = ret.concat(d.ret);
+                       if(ret.length===limit){
+                            res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                            res.send(ret);
+                        }
+
 	                } else{
-	                	if(queryIndex < querySq.length-1){
-	                		queryIndex ++;
-	                		queryDB(); 
+	                	if(d.queryIndex < querySq.length-1){
+                            d.queryIndex ++;
+	                		queryDB(d);
 	                	}else{
 	                		console.log("no task, generate new");
-	                		generateNew();
+	                		generateNew(d);
 	                	}
 	                }
 	            })
@@ -156,7 +161,53 @@ router.get('/getnew', function(req, res, next) {
 	            });
         }
     }
-    queryDB();
+
+    req.db.get('job').find({
+            '_status':'GO'
+        },
+        function(err, jobs) {
+            if (err) {
+                res.status(500);
+                return;
+            }
+            var length = jobs.length;
+            if (jobs.length === 0) {
+                res.status(500);
+                return;
+            }
+
+            if(limit === 1){
+                var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
+                queryDB({
+                    key: job.id,
+                    _length: 1,
+                    ret :[],
+                    job: job,
+                    queryIndex: 0
+                });
+                return;
+            }
+
+
+            var config = jobs.map(function(job,i){
+                var count = Math.floor(limit/length);
+                if(i==0){
+                    count+=limit%length;
+                };
+                return {
+                    key: job.id,
+                    _length: count,
+                    ret :[],
+                    job: job,
+                    queryIndex: 0
+                };
+            });
+
+            config.forEach(function(d){
+                queryDB(d);
+            });
+        });
+
 });
 
 module.exports = router;

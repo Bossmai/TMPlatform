@@ -1,14 +1,21 @@
 var mongojs = require('mongojs'),
-	express = require('express'),
-	router = express.Router(),
-	db = mongojs.connect('localhost:27017/test', ['task', 'temp']);
+    express = require('express'),
+    router = express.Router(),
+    moment = require('moment'),
+    db = mongojs.connect('localhost:27017/test', ['task', 'temp']);
 
 router.get('/', function(req, res, next) {
-	var mapper = function () {
-			emit(this.planExecDate, {
-	            status: this.status,
-	            scriptType: this.appRunner.scriptType
-	        });
+    var mapper = function () {
+        if(this.isHold == false){
+            emit({
+                planExecDate:this.planExecDate,
+                jobId : this.jobId
+            }, {
+                status: this.status,
+                scriptType: this.appRunner.scriptType
+            });
+        }
+
 
     };
 
@@ -16,36 +23,32 @@ router.get('/', function(req, res, next) {
 
 
         var ret = {
-            date : key,
-            newCount : 0,
+            isRtn : true,
             newSuccessCount :0,
-            repeatCount: 0,
             repeatSuccessCount:0
         };
 
-    	values.forEach(function(d){
-            if(d.date){
-                ret.newCount += d.newCount;
+        values.forEach(function(d){
+            if(d.isRtn){
                 ret.newSuccessCount += d.newSuccessCount;
-                ret.repeatCount += d.repeatCount;
                 ret.repeatSuccessCount += d.repeatSuccessCount;
                 return;
             }
-        	if(d.scriptType==='NEW'){
-        		ret.newCount ++;
-        		if(d.status==="SUCCESS"){
-        			ret.newSuccessCount ++;
-        		}
-        	}else if(d.scriptType==='REPEAT') {
-        		ret.repeatCount ++;
-        		if(d.status==="SUCCESS"){
-        			ret.repeatSuccessCount ++;
-        		}
-        	}
+            if(d.scriptType==='NEW'){
+
+                if(d.status==="SUCCESS"){
+                    ret.newSuccessCount ++;
+                }
+            }else if(d.scriptType==='REPEAT') {
+
+                if(d.status==="SUCCESS"){
+                    ret.repeatSuccessCount ++;
+                }
+            }
         })
         return ret;
     };
-    
+
     console.log("calling mapReduce " + db);
     db.task.mapReduce(
         mapper,
@@ -53,16 +56,27 @@ router.get('/', function(req, res, next) {
             out: 'temp'
         },
         function(err, collection){
-        	if(err){
-        		console.log(err);
-        	}
-        	collection.find().toArray(function(err, docs){
-        		res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                res.send(docs);
-        	})
+            if(err){
+                console.log(err);
+            }
+            collection.find().toArray(function(err, docs){
+                var ret = docs.filter(function(d){
+                    return !moment(d._id.planExecDate, 'YYYY/MM/DD').isAfter();
+                }).map(function(d){
+                    return {
+
+                        date : d._id.planExecDate,
+                        job: d._id.jobId,
+                        newCount: d.value.newSuccessCount,
+                        repeatCount: d.value.repeatSuccessCount
+                    };
+                })
+                res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                res.send(ret);
+            })
         }
     );
-    
+
 });
 
 
