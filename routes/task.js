@@ -133,23 +133,30 @@ router.get('/getnew', function(req, res, next) {
         limit = parseFloat(req.query.limit) || 15;
 
 	function generateNew(d){
-		request('http://'+req.headers.host+'/mockingjay',{
+
+        var query = {
             qs: d.job
-        }, function(_req, _res){
-			console.log(_res.body);
-			if(_res.body === "NO_DATA"){
-                console.log('generate new failed with resonse carry no date');
-                sendResponse(res, ret);
-			}else{
-				queryDB(d);
-			}
-			
-		});
+        };
+        if(req.query.slaverMAC){
+            query.qs.slaverMAC = req.query.slaverMAC;
+        }
+		request('http://'+req.headers.host+'/mockingjay',
+            query,
+            function(_req, _res){
+                console.log(_res.body);
+                if(_res.body === "NO_DATA"){
+                    console.log('generate new failed with resonse carry no date');
+                    sendResponse(res, ret);
+                }else{
+                    queryDB(d);
+                }
+
+            });
 	}
 	
     function queryDB(d){
         if(req.query.slaverMAC){
-            querySq[queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
+            querySq[d.queryIndex]["slaver.slaverMAC"] = req.query.slaverMAC;
         }
 
         if (limit > 0) {

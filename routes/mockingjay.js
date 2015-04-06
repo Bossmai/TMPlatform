@@ -129,8 +129,14 @@ var utils = {
         return result;
     },
 
-    getSlaver : function(i){
+    getSlaver : function(i, req){
         var me = this;
+
+        if(req && req.query.slaverMAC){
+            return me.slaverList.filter(function(d){
+                return d.slaverMAC === req.query.slaverMAC;
+            })[0];
+        }
         return me.slaverList[Math.floor(i/15)% me.slaverList.length];
     },
 
@@ -164,7 +170,7 @@ var utils = {
         return result;
     },
 
-    generateTasks : function(job){
+    generateTasks : function(job, req){
         var me = this;
         var taskList = [];
         var usersToCreate = parseFloat(job.newUsers);
@@ -182,7 +188,7 @@ var utils = {
                     planExecPeriod : job.planExecPeriod,
                     status : "NONE",
                     phone: me.getPhone(_phone),
-                    slaver : me.getSlaver(index * count + i),
+                    slaver : me.getSlaver(index * count + i, req),
                     appRunner: me.getAppRunner(job.appId),
                     createTime: moment().format('YYYY/MM/DD')
                 };
@@ -207,7 +213,7 @@ router.get('/', function(req, res, next) {
 
     function fn(req, res){
         var allTasks = [];
-        utils.generateTasks(job).forEach(function(d){
+        utils.generateTasks(job, req).forEach(function(d){
             req.db.get('task').insert(d);
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
