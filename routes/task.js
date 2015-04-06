@@ -57,11 +57,11 @@ router.delete('/:id', function(req, res, next) {
  * delete single task
  */
 router.get('/resetAbort', function(req, res, next) {
-	console.log(req.query.slaverMAC);
+    console.log(req.query.slaverMAC);
     req.db.get('task').update({
-    		'slaver.slaverMAC':req.query.slaverMAC,
-    		'status':'INPROGRESS'
-    	},
+            'slaver.slaverMAC':req.query.slaverMAC,
+            'status':'INPROGRESS'
+        },
         {$set: {'status':'NONE'}},
         function(err, docs) {
             if (err) {
@@ -74,6 +74,29 @@ router.get('/resetAbort', function(req, res, next) {
         });
 });
 
+
+/**
+ * clear unused data
+ */
+router.get('/clearData', function(req, res, next) {
+    console.log('clear data invoked');
+    var yesterday = moment().add(-1,'d').format('YYYY/MM/DD');
+    console.log('try to clear task date for yesterday: ' + yesterday);
+    req.db.get('task').remove({
+            'slaver.slaverMAC':req.query.slaverMAC,
+            'status': 'NONE',
+            'planExecDate' : yesterday
+        },
+        function(err, docs) {
+            if (err) {
+                res.status(500);
+                return;
+            }
+            res.setHeader('Content-Type', 'application/json;charset=utf-8');
+            res.status(200);
+            res.send("{status: 'OK'}");
+        });
+});
 
 /**
  * fetch task list with query condition and status:NONE in count
@@ -115,8 +138,8 @@ router.get('/getnew', function(req, res, next) {
         }, function(_req, _res){
 			console.log(_res.body);
 			if(_res.body === "NO_DATA"){
-				res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                res.send(ret);
+                console.log('generate new failed with resonse carry no date');
+                sendResponse(res, ret);
 			}else{
 				queryDB(d);
 			}
@@ -141,8 +164,7 @@ router.get('/getnew', function(req, res, next) {
 	                if(d.ret.length === d._length){
                         ret = ret.concat(d.ret);
                        if(ret.length===limit){
-                            res.setHeader('Content-Type', 'application/json;charset=utf-8');
-                            res.send(ret);
+                           sendResponse(res, ret);
                         }
 
 	                } else{
@@ -156,8 +178,7 @@ router.get('/getnew', function(req, res, next) {
 	                }
 	            })
 	            .error(function(err){
-	                res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	                res.send(ret);
+                    sendResponse(res, ret);
 	            });
         }
     }
@@ -209,5 +230,15 @@ router.get('/getnew', function(req, res, next) {
         });
 
 });
+
+function sendResponse(res, doc){
+    try{
+        res.setHeader('Content-Type', 'application/json;charset=utf-8');
+        res.send(doc);
+    }catch(e){
+        console.log('Exception when sending response:' + e);
+    }
+    return;
+}
 
 module.exports = router;
