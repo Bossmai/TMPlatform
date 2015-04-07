@@ -172,7 +172,7 @@ router.get('/getnew', function(req, res, next) {
     function queryDB(d){
     	querySq[d.queryIndex]["slaver.slaverMAC"] = slaverMAC;
 
-        if (limit > 0) {
+        if (d._length > 0) {
             var query = querySq[d.queryIndex];
             query.jobId = d.job.id;
             req.db.get('task').find(query, { stream: true, limit: d._length - d.ret.length})
