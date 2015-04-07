@@ -130,8 +130,10 @@ var utils = {
     },
 
     getSlaver : function(i, req){
+    	
+    	console.log(req.query.slaverMAC);
+    	
         var me = this;
-
         if(req && req.query.slaverMAC){
             return me.slaverList.filter(function(d){
                 return d.slaverMAC === req.query.slaverMAC;

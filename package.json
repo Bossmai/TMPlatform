@@ -18,6 +18,7 @@
     "moment": "*",
     "request": "*",
     "node-uuid" : "*",
-    "mongojs" : "*"
+    "mongojs" : "*",
+    "log4js" : "*"
   }
 }

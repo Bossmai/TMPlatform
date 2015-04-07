@@ -3,11 +3,21 @@
     moment = require('moment'),
     request = require('request');
 
+var log4js = require('log4js');
+log4js.configure({
+  appenders: [
+    { type: 'console' },
+    { type: 'file', filename: 'tm.log'}
+  ]
+});
+var logger = log4js.getLogger();
+
+
 /**
  * fetch task list 
  */
 router.get('/', function(req, res, next) {
-	console.log('task.get.start');
+	logger.info('task.get.start');
     req.db.get('task').find(
         {},//req.query,
         function(err, docs) {
@@ -20,7 +30,7 @@ router.get('/', function(req, res, next) {
  * update single task
  */
 router.put('/:id', function(req, res, next) {
-    console.log('task.update.start: ' + JSON.stringify(req.body));
+	logger.info('task.update.start: ' + JSON.stringify(req.body));
     req.db.get('task').update(
         {id: req.params.id},
         {$set:req.body},
@@ -39,7 +49,7 @@ router.put('/:id', function(req, res, next) {
  * delete single task
  */
 router.delete('/:id', function(req, res, next) {
-    console.log('task.delete.start: ' + JSON.stringify(req.body));
+	logger.info('task.delete.start: ' + JSON.stringify(req.body));
     req.db.get('task').delete(
         {id: req.params.id},
         function(err, docs) {
@@ -57,7 +67,7 @@ router.delete('/:id', function(req, res, next) {
  * delete single task
  */
 router.get('/resetAbort', function(req, res, next) {
-    console.log(req.query.slaverMAC);
+	logger.info(req.query.slaverMAC);
     req.db.get('task').update({
             'slaver.slaverMAC':req.query.slaverMAC,
             'status':'INPROGRESS'
@@ -79,9 +89,9 @@ router.get('/resetAbort', function(req, res, next) {
  * clear unused data
  */
 router.get('/clearData', function(req, res, next) {
-    console.log('clear data invoked');
+	logger.info('clear data invoked');
     var yesterday = moment().add(-1,'d').format('YYYY/MM/DD');
-    console.log('try to clear task date for yesterday: ' + yesterday);
+    logger.info('try to clear task date for yesterday: ' + yesterday);
     req.db.get('task').remove({
             'slaver.slaverMAC':req.query.slaverMAC,
             'status': 'NONE',
@@ -102,159 +112,148 @@ router.get('/clearData', function(req, res, next) {
  * fetch task list with query condition and status:NONE in count
  */
 router.get('/getnew', function(req, res, next) {
-    var slaverMAC;
-    if(req.query.slaverMAC){
-        slaverMAC = req.query.slaverMAC;
-        req.db.get('slaver').find(
-            {slaverMAC: slaverMAC},
-            function(err, docs) {
-                if(docs.length > 0){
-                    exec();
+	logger.info("getnew.");
+	if(!req.query.slaverMAC){
+		logger.info("no slaverMAC found, return.");
+        sendResponse(res, "no slaverMAC");
+        return;
+	}
+    var slaverMAC = req.query.slaverMAC;
+    
+    var ret = [],
+        today = moment().format('YYYY/MM/DD'),
+        querySq =[{
+            //请求今日留存失败
+            'planExecDate' : today,
+            'appRunner.scriptType' : "REPEAT",
+            'status' : {'$in' :['FAILURE','NOT_BUILT']},
+            'isHold' : false
+        },{
+            //请求今日留存未做
+            'planExecDate' : today,
+            'appRunner.scriptType' : "REPEAT",
+            'status' : 'NONE',
+            'isHold' : false
+        },{
+            //请求今日新增失败
+            'planExecDate' : today,
+            'appRunner.scriptType' : "NEW",
+            'status' : {'$in' :['FAILURE','NOT_BUILT']},
+            'isHold' : false
+        },{
+            //请求今日新增未做
+            'planExecDate' : today,
+            'appRunner.scriptType' : "NEW",
+            'status' : 'NONE',
+            'isHold' : false
+        }],
+        limit = parseFloat(req.query.limit) || 15;
+
+    function generateNew(d){
+
+        var query = {
+            qs: d.job
+        };
+        query.qs.slaverMAC = slaverMAC;
+       
+        request('http://'+req.headers.host+'/mockingjay',
+            query,
+            function(_req, _res){
+                if(_res.body === "NO_DATA"){
+                	logger.info('generate new failed with resonse carry no date');
+                    sendResponse(res, ret);
                 }else{
-                    console.log("no slaverMAC matched, return !!!!!!!!!!!!!!!1");
-                    sendResponse(res, docs);
-                    return;
-                }
-            });
-    }else{
-        exec();
-    }
-
-
-	function exec(){
-        var ret = [],
-            today = moment().format('YYYY/MM/DD'),
-            querySq =[{
-                //请求今日留存失败
-                'planExecDate' : today,
-                'appRunner.scriptType' : "REPEAT",
-                'status' : {'$in' :['FAILURE','NOT_BUILT']},
-                'isHold' : false
-            },{
-                //请求今日留存未做
-                'planExecDate' : today,
-                'appRunner.scriptType' : "REPEAT",
-                'status' : 'NONE',
-                'isHold' : false
-            },{
-                //请求今日新增失败
-                'planExecDate' : today,
-                'appRunner.scriptType' : "NEW",
-                'status' : {'$in' :['FAILURE','NOT_BUILT']},
-                'isHold' : false
-            },{
-                //请求今日新增未做
-                'planExecDate' : today,
-                'appRunner.scriptType' : "NEW",
-                'status' : 'NONE',
-                'isHold' : false
-            }],
-            limit = parseFloat(req.query.limit) || 15;
-
-        function generateNew(d){
-
-            var query = {
-                qs: d.job
-            };
-            if(slaverMAC){
-                query.qs.slaverMAC = slaverMAC;
-            }
-            request('http://'+req.headers.host+'/mockingjay',
-                query,
-                function(_req, _res){
-                    console.log(_res.body);
-                    if(_res.body === "NO_DATA"){
-                        console.log('generate new failed with resonse carry no date');
-                        sendResponse(res, ret);
-                    }else{
-                        queryDB(d);
-                    }
-
-                });
-        }
-
-        function queryDB(d){
-            if(slaverMAC){
-                querySq[d.queryIndex]["slaver.slaverMAC"] = slaverMAC;
-            }
-
-            if (limit > 0) {
-                var query = querySq[d.queryIndex];
-                query.jobId = d.job.id;
-                req.db.get('task').find(query, { stream: true, limit: d._length - d.ret.length})
-                    .each(function(doc){
-                        d.ret.push(doc);
-                        req.db.get('task').update({_id: doc._id},{$set:{'status':'INPROGRESS'}})
-                    })
-                    .success(function(){
-                        if(d.ret.length === d._length){
-                            ret = ret.concat(d.ret);
-                            if(ret.length===limit){
-                                sendResponse(res, ret);
-                            }
-
-                        } else{
-                            if(d.queryIndex < querySq.length-1){
-                                d.queryIndex ++;
-                                queryDB(d);
-                            }else{
-                                console.log("no task, generate new");
-                                generateNew(d);
-                            }
-                        }
-                    })
-                    .error(function(err){
-                        sendResponse(res, ret);
-                    });
-            }
-        }
-
-        req.db.get('job').find({
-                '_status':'GO'
-            },
-            function(err, jobs) {
-                if (err) {
-                    res.status(500);
-                    return;
-                }
-                var length = jobs.length;
-                if (jobs.length === 0) {
-                    res.status(500);
-                    return;
-                }
-
-                if(limit === 1){
-                    var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
-                    queryDB({
-                        key: job.id,
-                        _length: 1,
-                        ret :[],
-                        job: job,
-                        queryIndex: 0
-                    });
-                    return;
-                }
-
-
-                var config = jobs.map(function(job,i){
-                    var count = Math.floor(limit/length);
-                    if(i==0){
-                        count+=limit%length;
-                    };
-                    return {
-                        key: job.id,
-                        _length: count,
-                        ret :[],
-                        job: job,
-                        queryIndex: 0
-                    };
-                });
-
-                config.forEach(function(d){
                     queryDB(d);
-                });
+                }
+
             });
     }
+
+    function queryDB(d){
+    	querySq[d.queryIndex]["slaver.slaverMAC"] = slaverMAC;
+
+        if (limit > 0) {
+            var query = querySq[d.queryIndex];
+            query.jobId = d.job.id;
+            req.db.get('task').find(query, { stream: true, limit: d._length - d.ret.length})
+                .each(function(doc){
+                    d.ret.push(doc);
+                    req.db.get('task').update({_id: doc._id},{$set:{'status':'INPROGRESS'}})
+                })
+                .success(function(){
+                    if(d.ret.length === d._length){
+                        ret = ret.concat(d.ret);
+                        if(ret.length===limit){
+                            sendResponse(res, ret);
+                        }
+
+                    } else{
+                        if(d.queryIndex < querySq.length-1){
+                            d.queryIndex ++;
+                            queryDB(d);
+                        }else{
+                        	logger.info("current task ["+ d.job.appId +"] count :["+d.ret.length+"], not enough so generate new");
+                            generateNew(d);
+                        }
+                    }
+                })
+                .error(function(err){
+                    sendResponse(res, ret);
+                });
+        }
+    }
+
+    req.db.get('job').find({
+            '_status':'GO'
+        },
+        function(err, jobs) {
+            if (err) {
+            	logger.info("get job failed with err:" + err);
+                res.status(500);
+                return;
+            }
+            var length = jobs.length;
+            if (jobs.length === 0) {
+            	logger.info("get job failed with no data");
+                res.status(500);
+                return;
+            }
+
+            if(limit === 1){
+            	logger.info("require only 1 task");
+                var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
+                queryDB({
+                    key: job.id,
+                    _length: 1,
+                    ret :[],
+                    job: job,
+                    queryIndex: 0
+                });
+                return;
+            }
+
+
+            var config = jobs.map(function(job,i){
+                var count = Math.floor(limit/length);
+                if(i==0){
+                    count+=limit%length;
+                };
+                return {
+                    key: job.id,
+                    _length: count,
+                    ret :[],
+                    job: job,
+                    queryIndex: 0
+                };
+            });
+
+            config.forEach(function(d, i){
+            	logger.info("*************");
+            	logger.info(d);
+            	logger.info(i);
+                queryDB(d);
+            });
+        });
 
 });
 
@@ -263,7 +262,7 @@ function sendResponse(res, doc){
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
         res.send(doc);
     }catch(e){
-        console.log('Exception when sending response:' + e);
+        logger.info('Exception when sending response:' + e);
     }
     return;
 }
