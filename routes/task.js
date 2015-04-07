@@ -113,12 +113,12 @@ router.get('/clearData', function(req, res, next) {
  */
 router.get('/getnew', function(req, res, next) {
 	logger.info("getnew.");
-	if(!req.query.slaverMAC){
+	if(!req.query["slaver.slaverMAC"]){
 		logger.info("no slaverMAC found, return.");
         sendResponse(res, "no slaverMAC");
         return;
 	}
-    var slaverMAC = req.query.slaverMAC;
+    var slaverMAC = req.query["slaver.slaverMAC"];
     
     var ret = [],
         today = moment().format('YYYY/MM/DD'),
