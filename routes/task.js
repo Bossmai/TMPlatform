@@ -152,9 +152,11 @@ router.get('/getnew', function(req, res, next) {
     function generateNew(d){
 
         var query = {
-            qs: d.job
+            qs: {
+            	job: d.job,
+            	slaverMAC : slaverMAC
+            }
         };
-        query.qs.slaverMAC = slaverMAC;
        
         request('http://'+req.headers.host+'/mockingjay',
             query,

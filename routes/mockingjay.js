@@ -129,17 +129,19 @@ var utils = {
         return result;
     },
 
-    getSlaver : function(i, req){
-    	
-    	console.log(req.query.slaverMAC);
-    	
+    getSlaver : function(slaverMAC){
         var me = this;
-        if(req && req.query.slaverMAC){
-            return me.slaverList.filter(function(d){
-                return d.slaverMAC === req.query.slaverMAC;
-            })[0];
+        var temp = me.slaverList.filter(function(d){
+            return d.slaverMAC === req.query.slaverMAC;
+        });
+        if(temp.length > 0){
+        	return temp[0];
+        }else{
+        	return {
+        		slaverMAC: slaverMAC
+        	};
         }
-        return me.slaverList[Math.floor(i/15)% me.slaverList.length];
+       
     },
 
     getAppRunner : function(appId){
@@ -172,7 +174,7 @@ var utils = {
         return result;
     },
 
-    generateTasks : function(job, req){
+    generateTasks : function(job, slaverMAC){
         var me = this;
         var taskList = [];
         var usersToCreate = parseFloat(job.newUsers);
@@ -190,7 +192,7 @@ var utils = {
                     planExecPeriod : job.planExecPeriod,
                     status : "NONE",
                     phone: me.getPhone(_phone),
-                    slaver : me.getSlaver(index * count + i, req),
+                    slaver : me.getSlaver(slaverMAC),
                     appRunner: me.getAppRunner(job.appId),
                     createTime: moment().format('YYYY/MM/DD')
                 };
@@ -208,14 +210,20 @@ var utils = {
 
 router.get('/', function(req, res, next) {
     
-    var job = req.query;
+    var job = req.query.job;
     if(job === null || job === {}) {
+    	logger.info("no job configured, return !");
+        return;
+    }
+    var slaverMAC = req.query.slaverMAC;
+    if(job === null || job === {}) {
+    	logger.info("no slaverMAC configured, return !");
         return;
     }
 
     function fn(req, res){
         var allTasks = [];
-        utils.generateTasks(job, req).forEach(function(d){
+        utils.generateTasks(job, slaverMAC).forEach(function(d){
             req.db.get('task').insert(d);
         });
         res.setHeader('Content-Type', 'application/json;charset=utf-8');
@@ -223,36 +231,6 @@ router.get('/', function(req, res, next) {
     }
     utils.init(req ,res, fn);
 });
-
-router.get('/all', function(req, res, next) {
-	console.log('generate tasks for all jobs');
-	var count = 0;
-    function fn(req, res){
-        req.db.get('job').find({_status: 'GO'}, { stream: true})
-	    .each(function(job){
-	    	count++;
-	    	utils.generateTasks(job).forEach(function(d){
-	            req.db.get('task').insert(d);
-	        });
-	    })
-	    .success(function(){
-	    	res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	    	if(count === 0){
-	    		res.send('NO_DATA');
-	    	}else{
-	    		res.send('DONE');
-	    	}
-	        
-	    })
-	    .error(function(err){
-	        res.setHeader('Content-Type', 'application/json;charset=utf-8');
-	        res.send(err);
-	    });
-        
-    }
-    utils.init(req ,res, fn);
-});
-
 
 router.get('/hold', function(req, res, next) {
 	req.db.get('task').options.multi = true;
