@@ -132,7 +132,7 @@ var utils = {
     getSlaver : function(slaverMAC){
         var me = this;
         var temp = me.slaverList.filter(function(d){
-            return d.slaverMAC === req.query.slaverMAC;
+            return d.slaverMAC === slaverMAC;
         });
         if(temp.length > 0){
         	return temp[0];
