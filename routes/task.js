@@ -31,18 +31,34 @@ router.get('/', function(req, res, next) {
  */
 router.put('/:id', function(req, res, next) {
 	logger.info('task.update.start: ' + JSON.stringify(req.body));
-    req.db.get('task').update(
+    var newVal = req.body;
+    req.db.get('task').find(
         {id: req.params.id},
-        {$set:req.body},
-        function(err, docs) {
-            if (err) {
-                res.status(500);
-                return;
+        function(err, tasks) {
+            if(tasks[0].appRunner.scriptType == "NEW"){
+                if(newVal.status == "SUCCESS"){
+                    newVal.repeatTimes = task[0].repeatTimes ? (task[0].repeatTimes+1):1;
+                } else if(newVal.status == "FAILURE" && task[0].repeatTimes){
+                    //二次激活执行失败的情况，重置状态位为上一次新增的成功，理解为二次激活没有做过
+                    newVal.status = "SUCCESS";
+                }
             }
-            res.setHeader('Content-Type', 'application/json;charset=utf-8');
-            res.status(200);
-            res.send("{status: 'OK'}");
+            req.db.get('task').update(
+                {id: req.params.id},
+                {$set:newVal},
+                function(err, docs) {
+                    if (err) {
+                        res.status(500);
+                        return;
+                    }
+                    res.setHeader('Content-Type', 'application/json;charset=utf-8');
+                    res.status(200);
+                    res.send("{status: 'OK'}");
+                });
         });
+
+
+
 });
 
 /**
@@ -146,6 +162,15 @@ router.get('/getnew', function(req, res, next) {
             'appRunner.scriptType' : "NEW",
             'status' : 'NONE',
             'isHold' : false
+
+        },{
+            //今日新增二次激活
+            'planExecDate' : today,
+            'appRunner.scriptType' : "NEW",
+            'status' : 'SUCCESS',
+            'repeatTimes': 1,
+            'isHold' : false
+
         }],
         limit = parseFloat(req.query.limit) || 15;
 
@@ -165,6 +190,8 @@ router.get('/getnew', function(req, res, next) {
                 	logger.info('generate new failed with resonse carry no date');
                     sendResponse(res, ret);
                 }else{
+                    //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
+                    d.queryIndex--;
                     queryDB(d);
                 }
 
@@ -179,6 +206,14 @@ router.get('/getnew', function(req, res, next) {
             query.jobId = d.job.id;
             req.db.get('task').find(query, { stream: true, limit: d._length - d.ret.length})
                 .each(function(doc){
+
+                    if(query.repeatTimes){
+                        //这里设置二次激活的执行时间检查必须为上次执行成功的n个小时后
+                        if(moment(doc.execEndTime).add(3, 'hours').isAfter(moment())){
+                            //do nothing this time
+                            return;
+                        }
+                    }
                     d.ret.push(doc);
                     req.db.get('task').update({_id: doc._id},{$set:{'status':'INPROGRESS'}})
                 })
