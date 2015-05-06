@@ -37,8 +37,8 @@ router.put('/:id', function(req, res, next) {
         function(err, tasks) {
             if(tasks[0].appRunner.scriptType == "NEW"){
                 if(newVal.status == "SUCCESS"){
-                    newVal.repeatTimes = task[0].repeatTimes ? (task[0].repeatTimes+1):1;
-                } else if(newVal.status == "FAILURE" && task[0].repeatTimes){
+                    newVal.repeatTimes = tasks[0].repeatTimes ? (tasks[0].repeatTimes+1):1;
+                } else if(newVal.status == "FAILURE" && tasks[0].repeatTimes){
                     //二次激活执行失败的情况，重置状态位为上一次新增的成功，理解为二次激活没有做过
                     newVal.status = "SUCCESS";
                 }
@@ -209,7 +209,7 @@ router.get('/getnew', function(req, res, next) {
 
                     if(query.repeatTimes){
                         //这里设置二次激活的执行时间检查必须为上次执行成功的n个小时后
-                        if(moment(doc.execEndTime).add(3, 'hours').isAfter(moment())){
+                        if(moment(doc.execEndTime).add(2, 'hours').isAfter(moment())){
                             //do nothing this time
                             return;
                         }
