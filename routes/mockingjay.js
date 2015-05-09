@@ -152,7 +152,8 @@ var utils = {
         return {
             "appId" : appId,
             "scriptName" : app.scriptName,
-            "scriptType": "NEW"
+            "scriptType": "NEW",
+			"needRepeat": app.needRepeat?app.needRepeat:true
         };
     },
 

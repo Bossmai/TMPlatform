@@ -1,6 +1,6 @@
 Ext.define('App',{
     extend: 'Ext.data.Model',
-    fields :['_id','id','scriptName','lcModel'],
+    fields :['_id','id','scriptName','lcModel', 'needRepeat'],
     proxy: {
         type: 'rest',
         url: 'app'

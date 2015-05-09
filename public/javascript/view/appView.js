@@ -32,7 +32,10 @@ Ext.define('tm.view.AppView', {
             { text: 'lcModel', dataIndex: 'lcModel',editor:{
                 bind:'{current.lcModel}',
                 selectOnFocus: true
-            } }, {
+            } },{ text: 'needRepeat', dataIndex: 'needRepeat'/*,editor:{
+                bind:'{current.needRepeat}',
+                selectOnFocus: true
+            }*/ }, {
             	 xtype:'actioncolumn',
             	 items: [{
                      icon: '/img/remove.png',
@@ -73,6 +76,11 @@ Ext.define('tm.view.AppView', {
             fieldLabel: 'lcModel',
             name: 'lcModel',
             bind:'{current.lcModel}'
+        },{
+			xtype:'checkbox',
+            fieldLabel: 'needRepeat',
+            name: 'needRepeat',
+            bind:'{current.needRepeat}'
         }],
         buttons:[{
             text:'提交',

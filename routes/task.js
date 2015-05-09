@@ -36,12 +36,15 @@ router.put('/:id', function(req, res, next) {
         {id: req.params.id},
         function(err, tasks) {
             if(tasks[0].appRunner.scriptType == "NEW"){
-                if(newVal.status == "SUCCESS"){
-                    newVal.repeatTimes = tasks[0].repeatTimes ? (tasks[0].repeatTimes+1):1;
-                } else if(newVal.status == "FAILURE" && tasks[0].repeatTimes){
-                    //二次激活执行失败的情况，重置状态位为上一次新增的成功，理解为二次激活没有做过
-                    newVal.status = "SUCCESS";
-                }
+				if(tasks[0].appRunner.needRepeat == true){
+					if(newVal.status == "SUCCESS"){
+						newVal.repeatTimes = tasks[0].repeatTimes ? (tasks[0].repeatTimes+1):1;
+					} else if(newVal.status == "FAILURE" && tasks[0].repeatTimes){
+						//二次激活执行失败的情况，重置状态位为上一次新增的成功，理解为二次激活没有做过
+						newVal.status = "SUCCESS";
+					}
+				}
+               
             }
             req.db.get('task').update(
                 {id: req.params.id},
