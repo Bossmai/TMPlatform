@@ -1,6 +1,6 @@
 Ext.define('PhoneType',{
     extend: 'Ext.data.Model',
-    fields :['_id', 'MANUFACTURER','BRAND','HARDWARE','MODEL', 'PRODUCT', 'DEVICE', 'mac6', 'fac', 'mac', 'tac', 'mnc', 'percent'],
+    fields :['_id', 'MANUFACTURER','BRAND','HARDWARE','MODEL', 'PRODUCT', 'DEVICE', 'mac6', 'fac', 'mac', 'tac', 'mnc', 'percent', 'FINGERPRINT'],
     proxy: {
         type: 'rest',
         url: 'phoneType'

@@ -62,11 +62,16 @@ Ext.define('tm.view.PhoneTypeView', {
             { text: 'mnc', dataIndex:'mnc',editor:{
                 bind:'{current.mnc}',
                 selectOnFocus: true
-            } }, 
+            } },
             { text: 'percent', dataIndex:'percent',editor:{
                 bind:'{current.percent}',
                 selectOnFocus: true
-            } }, {
+            } },
+            { text: 'FINGERPRINT', dataIndex:'FINGERPRINT',editor:{
+                bind:'{current.FINGERPRINT}',
+                selectOnFocus: true
+            } },
+            {
             	 xtype:'actioncolumn',
             	 items: [{
                      icon: '/img/remove.png',
@@ -132,6 +137,10 @@ Ext.define('tm.view.PhoneTypeView', {
             fieldLabel: 'mnc',
             name: 'mnc',
             bind:'{current.mnc}'
+        },{
+            fieldLabel: 'FINGERPRINT',
+            name: 'FINGERPRINT',
+            bind:'{current.FINGERPRINT}'
         }],
         buttons:[{
             text:'提交',

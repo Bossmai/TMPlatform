@@ -53,7 +53,8 @@ var utils = {
             "SDK" : "18",
             "getMetrics" : "720x1184",
             "getLine1Number" : me.randomPick(["13", "15", "18"]) + me.getRandom(9),
-            "getString" : me.getRandom16(8,"")
+            "getString" : me.getRandom16(8,""),
+            "FINGERPRINT": _phone.FINGERPRINT
         };
     },
     getRandom16: function(length, splitter){
