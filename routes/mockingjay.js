@@ -169,7 +169,7 @@ var utils = {
         result.forEach(function(d){
             var planExecDate = moment(d.planExecDate, 'YYYY/MM/DD');
             d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY/MM/DD');
-            d.id = d.id + "_" + datIndex;
+            d.id = d.id + "_" + dayIndex;
             d.appRunner.scriptType = "REPEAT";
         });
         return result;
