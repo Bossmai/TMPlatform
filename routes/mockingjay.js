@@ -169,7 +169,7 @@ var utils = {
         result.forEach(function(d){
             var planExecDate = moment(d.planExecDate, 'YYYY/MM/DD');
             d.planExecDate = planExecDate.add(dayIndex+1,'d').format('YYYY/MM/DD');
-            d.id = d.id.substr(0, d.id.length-1) + (dayIndex+1);
+            d.id = d.id + "_" + datIndex;
             d.appRunner.scriptType = "REPEAT";
         });
         return result;
@@ -186,7 +186,7 @@ var utils = {
             var count = Math.ceil(_phone.percent /100 * usersToCreate);
             for(var i=0; i< count; i++){
                 var task = {
-                    id: job.appId + _phone.MODEL + '_' + i + '_0'+uuid.v1() + (new Date()-0),
+                    id: job.appId + _phone.MODEL + i + uuid.v1() + (new Date()-0) ,
                     jobId : job.id,
                     isHold: false,
                     planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
