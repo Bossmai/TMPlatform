@@ -36,7 +36,7 @@ router.put('/:id', function(req, res, next) {
         {id: req.params.id},
         function(err, tasks) {
 
-            if(tasks === undefined){
+            if(tasks === undefined || tasks[0] === undefined){
                 logger.info('task.update.skip with invalid id: ' + req.params.id);
                 return;
             }
