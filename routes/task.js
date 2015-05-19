@@ -35,6 +35,12 @@ router.put('/:id', function(req, res, next) {
     req.db.get('task').find(
         {id: req.params.id},
         function(err, tasks) {
+
+            if(tasks === undefined){
+                logger.info('task.update.skip with invalid id: ' + req.params.id);
+                return;
+            }
+
             if(tasks[0].appRunner.scriptType == "NEW"){
 				if(tasks[0].appRunner.needRepeat == true){
 					if(newVal.status == "SUCCESS"){
