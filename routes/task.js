@@ -137,7 +137,6 @@ router.get('/clearData', function(req, res, next) {
  * fetch task list with query condition and status:NONE in count
  */
 router.get('/getnew', function(req, res, next) {
-	logger.info("getnew.");
 	if(!req.query["slaver.slaverMAC"]){
 		logger.info("no slaverMAC found, return.");
         sendResponse(res, "no slaverMAC");
@@ -147,6 +146,7 @@ router.get('/getnew', function(req, res, next) {
     
     var ret = [],
         today = moment().format('YYYY/MM/DD'),
+        jobList = undefined,
         querySq =[{
             //请求今日留存失败
             'planExecDate' : today,
@@ -185,26 +185,67 @@ router.get('/getnew', function(req, res, next) {
 
     function generateNew(d){
 
-        var query = {
-            qs: {
-            	job: d.job,
-            	slaverMAC : slaverMAC
+        //get count list from db
+        req.db.get('countList').find({
+            date : today
+        }, function(err, docs) {
+            if(err){
+                logger.info("error" + e);
+                return;
             }
-        };
-       
-        request('http://'+req.headers.host+'/mockingjay',
-            query,
-            function(_req, _res){
-                if(_res.body === "NO_DATA"){
-                	logger.info('generate new failed with resonse carry no date');
-                    sendResponse(res, ret);
-                }else{
-                    //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
-                    d.queryIndex--;
-                    queryDB(d);
-                }
+            if(docs && docs[0]){
+                countList = docs[0];
+            }else{
+                countList = {
+                    date: today
+                };
+                req.db.get('countList').insert(countList);
+            }
+            if(!countList[d.job._id]){
+                countList[d.job._id] = 0;
+            }
 
-            });
+            if(countList[d.job._id] > 200){
+                logger.info("job: [" + d.job.appId + "] hit the max limit 200, stop add.");
+                stopJob(d.job);
+                return;
+            }
+
+            var query = {
+                qs: {
+                    job: d.job,
+                    slaverMAC : slaverMAC
+                }
+            };
+
+            request('http://'+req.headers.host+'/mockingjay',
+                query,
+                function(_req, _res){
+                    if(_res.body === "NO_DATA"){
+                        logger.info('generate new failed with resonse carry no date');
+                        sendResponse(res, ret);
+                    }else{
+
+                        countList[d.job._id] += parseInt(d.job.newUsers);
+                        req.db.get('countList').update({"date" : today},{$set:countList});
+
+                        //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
+                        d.queryIndex--;
+                        queryDB(d);
+                    }
+
+                });
+
+        })
+    }
+
+    function stopJob(job){
+        jobList = jobList.filter(function(d){
+            return d!== job;
+        });
+        if(jobList.length === 0){
+            sendResponse(res, ret);
+        }
     }
 
     function queryDB(d){
@@ -232,8 +273,7 @@ router.get('/getnew', function(req, res, next) {
                         if(ret.length===limit){
                             sendResponse(res, ret);
                         }
-
-                    } else{
+                    } else {
                         if(d.queryIndex < querySq.length-1){
                             d.queryIndex ++;
                             queryDB(d);
@@ -258,6 +298,8 @@ router.get('/getnew', function(req, res, next) {
                 res.status(500);
                 return;
             }
+            jobList = jobs;
+
             var length = jobs.length;
             if (jobs.length === 0) {
             	logger.info("get job failed with no data");
@@ -294,9 +336,6 @@ router.get('/getnew', function(req, res, next) {
             });
 
             config.forEach(function(d, i){
-            	logger.info("*************");
-            	logger.info(d);
-            	logger.info(i);
                 queryDB(d);
             });
         });
