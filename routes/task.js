@@ -33,11 +33,14 @@ router.put('/:id', function(req, res, next) {
 	logger.info('task.update.start: ' + JSON.stringify(req.body));
     var newVal = req.body;
     req.db.get('task').find(
-        {id: req.params.id},
+        /* temp fix for issue of auto switch " " into "+" in param */
+        {id: req.params.id.replace("+", " ")},
+
+        //{id: req.params.id},
         function(err, tasks) {
 
             if(tasks === undefined || tasks[0] === undefined){
-                logger.info('task.update.skip with invalid id: ' + req.params.id);
+                logger.info('task update skip with invalid id: ' + req.params.id);
                 return;
             }
 
