@@ -53,6 +53,7 @@ router.delete('/:id', function(req, res, next) {
     req.db.get('job').remove(
     	req.body,
         function(err, docs) {
+            req.db.get('task').remove({jobId: req.body.id});
             res.setHeader('Content-Type', 'application/json;charset=utf-8');
             res.send(docs);
         });
