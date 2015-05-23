@@ -225,7 +225,7 @@ router.get('/getnew', function(req, res, next) {
                 query,
                 function(_req, _res){
                     if(_res.body === "NO_DATA"){
-                        logger.info('generate new failed with resonse carry no date');
+                        logger.info('generate new failed with response carry no date');
                         sendResponse(res, ret);
                     }else{
 
@@ -322,9 +322,11 @@ router.get('/getnew', function(req, res, next) {
                 });
                 return;
             }
-
-
-            var config = jobs.map(function(job,i){
+            var config = jobs.sort(function(job1,job2){
+                var priority1 = job1.priority ? parseInt(job1.priority) : 0;
+                var priority2 = job2.priority ?  parseInt(job2.priority) : 0;
+                return priority2 - priority1;
+            }).map(function(job,i){
                 var count = Math.floor(limit/length);
                 if(i==0){
                     count+=limit%length;

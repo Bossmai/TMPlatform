@@ -42,6 +42,7 @@ Ext.define('tm.view.JobView', {
                 selectOnFocus: true
             } },
             { text: 'status', dataIndex: '_status'},
+            { text: 'priority', dataIndex: 'priority'},
             {
             	 xtype:'actioncolumn',
             	 items: [{
@@ -109,6 +110,10 @@ Ext.define('tm.view.JobView', {
             fieldLabel: 'status',
             name: '_status',
             bind:'{current._status}'
+        },{
+            fieldLabel: 'priority',
+            name: 'priority',
+            bind:'{current.priority}'
         }],
         buttons:[{
             text:'提交',
