@@ -91,9 +91,12 @@ var j = schedule.scheduleJob(rule, function(){
         'planExecDate' : yesterday
     }, { stream: true})
         .each(function(doc){
-            db.get('task').remove({
-                'referId' : doc.referId
-            })
+            if(doc.referId !== undefined){
+                db.get('task').remove({
+                    'referId' : doc.referId
+                })
+            }
+
         })
         .error(function(err){
             //do nothing
