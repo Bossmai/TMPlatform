@@ -183,9 +183,12 @@ router.get('/getnew', function(req, res, next) {
             if(!countList[d.job._id]){
                 countList[d.job._id] = 0;
             }
-
-            if(countList[d.job._id] > 200){
-                logger.info("job: [" + d.job.appId + "] hit the max limit 200, stop add.");
+            /* TODO it will failed when we have
+             * multi-slaver running on the same TMPlatform. need to bring
+             * in slaverMAC as a condition.
+            */
+            if(countList[d.job._id] > 100){
+                logger.info("job: [" + d.job.appId + "] hit the max limit 100, stop add.");
                 stopJob(d.job);
                 return;
             }
