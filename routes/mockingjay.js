@@ -186,8 +186,10 @@ var utils = {
             }
             var count = Math.ceil(_phone.percent /100 * usersToCreate);
             for(var i=0; i< count; i++){
+                var id = uuid.v1() + "_" + (new Date()-0) ;
                 var task = {
-                    id: uuid.v1() + "_" + (new Date()-0) ,
+                    id: id,
+                    referId: id,
                     jobId : job.id,
                     isHold: false,
                     planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation

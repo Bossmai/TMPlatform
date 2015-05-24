@@ -112,30 +112,6 @@ router.get('/resetAbort', function(req, res, next) {
         });
 });
 
-
-/**
- * clear unused data
- */
-router.get('/clearData', function(req, res, next) {
-	logger.info('clear data invoked');
-    var yesterday = moment().add(-1,'d').format('YYYY/MM/DD');
-    logger.info('try to clear task date for yesterday: ' + yesterday);
-    req.db.get('task').remove({
-            'slaver.slaverMAC':req.query.slaverMAC,
-            'status': 'NONE',
-            'planExecDate' : yesterday
-        },
-        function(err, docs) {
-            if (err) {
-                res.status(500);
-                return;
-            }
-            res.setHeader('Content-Type', 'application/json;charset=utf-8');
-            res.status(200);
-            res.send("{status: 'OK'}");
-        });
-});
-
 /**
  * fetch task list with query condition and status:NONE in count
  */
