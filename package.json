@@ -19,6 +19,7 @@
     "request": "*",
     "node-uuid" : "*",
     "mongojs" : "*",
-    "log4js" : "*"
+    "log4js" : "*",
+    "node-schedule" : "*"
   }
 }
