@@ -180,30 +180,24 @@ var utils = {
         var me = this;
         var taskList = [];
         var usersToCreate = parseFloat(job.newUsers);
-        me.phoneTypeList.forEach(function(_phone, index){
-            if(taskList.length > usersToCreate){
-                return;
-            }
-            var count = Math.ceil(_phone.percent /100 * usersToCreate);
-            for(var i=0; i< count; i++){
-                var id = uuid.v1() + "_" + (new Date()-0) ;
-                var task = {
-                    id: id,
-                    referId: id,
-                    jobId : job.id,
-                    isHold: false,
-                    planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
-                    planExecPeriod : job.planExecPeriod,
-                    status : "NONE",
-                    phone: me.getPhone(_phone),
-                    slaver : me.getSlaver(slaverMAC),
-                    appRunner: me.getAppRunner(job.appId),
-                    createTime: moment().format('YYYY/MM/DD')
-                };
-                taskList.push(task);
-            }
-        });
-        
+        for(var i =0; i<usersToCreate; i++){
+            var _phone = me.phoneTypeList[utils.random(me.phoneTypeList.length-1)];
+            var id = uuid.v1() + "_" + (new Date()-0) ;
+            var task = {
+                id: id,
+                referId: id,
+                jobId : job.id,
+                isHold: false,
+                planExecDate : moment().format('YYYY/MM/DD'), //here uses new Date() for cycle creation
+                planExecPeriod : job.planExecPeriod,
+                status : "NONE",
+                phone: me.getPhone(_phone),
+                slaver : me.getSlaver(slaverMAC),
+                appRunner: me.getAppRunner(job.appId),
+                createTime: moment().format('YYYY/MM/DD')
+            };
+            taskList.push(task);
+        }
         me.getLCModel(job.appId).forEach(function(percent, dayIndex){
             var list = me.getSubList(taskList, Math.ceil(parseFloat(percent) * usersToCreate/100), dayIndex);
             taskList = taskList.concat(list);

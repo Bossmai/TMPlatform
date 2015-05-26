@@ -162,36 +162,27 @@ router.get('/getnew', function(req, res, next) {
         }],
         limit = parseFloat(req.query.limit) || 15;
 
-    function generateNew(d){
-
-        //get count list from db
+    function getCountList (callback){
         req.db.get('countList').find({
             date : today
         }, function(err, docs) {
-            if(err){
+            if (err) {
                 logger.info("error" + e);
                 return;
             }
-            if(docs && docs[0]){
+            if (docs && docs[0]) {
                 countList = docs[0];
-            }else{
+            } else {
                 countList = {
                     date: today
                 };
                 req.db.get('countList').insert(countList);
             }
-            if(!countList[d.job._id]){
-                countList[d.job._id] = 0;
-            }
-            /* TODO it will failed when we have
-             * multi-slaver running on the same TMPlatform. need to bring
-             * in slaverMAC as a condition.
-            */
-            if(countList[d.job._id] > 100){
-                logger.info("job: [" + d.job.appId + "] hit the max limit 100, stop add.");
-                stopJob(d.job);
-                return;
-            }
+            callback(countList);
+        });
+    }
+
+    function generateNew(d, countList){
 
             var query = {
                 qs: {
@@ -207,30 +198,22 @@ router.get('/getnew', function(req, res, next) {
                         logger.info('generate new failed with response carry no date');
                         sendResponse(res, ret);
                     }else{
-
-                        countList[d.job._id] += parseInt(d.job.newUsers);
+                        if(!countList[d.job.id]){
+                            countList[d.job.id] = 0;
+                        }
+                        countList[d.job.id] += parseInt(d.job.newUsers);
                         req.db.get('countList').update({"date" : today},{$set:countList});
 
                         //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
                         d.queryIndex--;
-                        queryDB(d);
+                        queryDB(d, countList);
                     }
 
                 });
 
-        })
     }
 
-    function stopJob(job){
-        jobList = jobList.filter(function(d){
-            return d!== job;
-        });
-        if(jobList.length === 0){
-            sendResponse(res, ret);
-        }
-    }
-
-    function queryDB(d){
+    function queryDB(d, countList){
     	querySq[d.queryIndex]["slaver.slaverMAC"] = slaverMAC;
 
         if (d._length > 0) {
@@ -258,10 +241,10 @@ router.get('/getnew', function(req, res, next) {
                     } else {
                         if(d.queryIndex < querySq.length-1){
                             d.queryIndex ++;
-                            queryDB(d);
+                            queryDB(d, countList);
                         }else{
                         	logger.info("current task ["+ d.job.appId +"] count :["+d.ret.length+"], not enough so generate new");
-                            generateNew(d);
+                            generateNew(d, countList);
                         }
                     }
                 })
@@ -271,58 +254,67 @@ router.get('/getnew', function(req, res, next) {
         }
     }
 
-    req.db.get('job').find({
-            '_status':'GO'
-        },
-        function(err, jobs) {
-            if (err) {
-            	logger.info("get job failed with err:" + err);
-                res.status(500);
-                return;
-            }
-            jobList = jobs;
-
-            var length = jobs.length;
-            if (jobs.length === 0) {
-            	logger.info("get job failed with no data");
-                res.status(500);
-                return;
-            }
-
-            if(limit === 1){
-            	logger.info("require only 1 task");
-                var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
-                queryDB({
-                    key: job.id,
-                    _length: 1,
-                    ret :[],
-                    job: job,
-                    queryIndex: 0
+    getCountList(function(countList){
+        req.db.get('job').find({
+                '_status':'GO'
+            },
+            function(err, jobs) {
+                if (err) {
+                    logger.info("get job failed with err:" + err);
+                    res.status(500);
+                    return;
+                }
+                jobs = jobs.filter(function(job){
+                    if(!countList[job.id]){
+                        return true;
+                    }
+                    return countList[job.id] < 100;
                 });
-                return;
-            }
-            var config = jobs.sort(function(job1,job2){
-                var priority1 = job1.priority ? parseInt(job1.priority) : 0;
-                var priority2 = job2.priority ?  parseInt(job2.priority) : 0;
-                return priority2 - priority1;
-            }).map(function(job,i){
-                var count = Math.floor(limit/length);
-                if(i==0){
-                    count+=limit%length;
-                };
-                return {
-                    key: job.id,
-                    _length: count,
-                    ret :[],
-                    job: job,
-                    queryIndex: 0
-                };
-            });
 
-            config.forEach(function(d, i){
-                queryDB(d);
+                var length = jobs.length;
+                if (length === 0) {
+                    logger.info("get job failed with no data");
+                    sendResponse(res, ret);
+                    return;
+                }
+
+                if(limit === 1){
+                    logger.info("require only 1 task");
+                    var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
+                    queryDB({
+                        key: job.id,
+                        _length: 1,
+                        ret :[],
+                        job: job,
+                        queryIndex: 0
+                    });
+                    return;
+                }
+                var config = jobs.sort(function(job1,job2){
+                    var priority1 = job1.priority ? parseInt(job1.priority) : 0;
+                    var priority2 = job2.priority ?  parseInt(job2.priority) : 0;
+                    return priority2 - priority1;
+                }).map(function(job,i){
+                    var count = Math.floor(limit/length);
+                    if(i==0){
+                        count+=limit%length;
+                    };
+                    return {
+                        key: job.id,
+                        _length: count,
+                        ret :[],
+                        job: job,
+                        queryIndex: 0
+                    };
+                });
+
+                config.forEach(function(d, i){
+                    queryDB(d, countList);
+                });
             });
-        });
+    });
+
+
 
 });
 
