@@ -256,7 +256,7 @@ router.get('/getnew', function(req, res, next) {
         }
     }
 
-    getCountList(function(countList){
+    function run(countList){
         req.db.get('job').find({
                 '_status':'GO'
             },
@@ -290,7 +290,7 @@ router.get('/getnew', function(req, res, next) {
                         ret :[],
                         job: job,
                         queryIndex: 0
-                    });
+                    }, countList);
                     return;
                 }
                 var config = jobs.sort(function(job1,job2){
@@ -315,9 +315,8 @@ router.get('/getnew', function(req, res, next) {
                     queryDB(d, countList);
                 });
             });
-    });
-
-
+    }
+    getCountList(run);
 
 });
 
