@@ -297,7 +297,7 @@ router.get('/getnew', function(req, res, next) {
 
                 var _length = 0;
                 jobs.forEach(function(job){
-                    job.priority = job.priority?parseInt(job1.priority) : 1;
+                    job.priority = job.priority?parseInt(job.priority) : 1;
                     _length += job.priority;
                 });
 
