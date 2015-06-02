@@ -198,8 +198,8 @@ router.get('/getnew', function(req, res, next) {
                         logger.info('generate new failed with response carry no date');
                         sendResponse(res, ret);
                     }else{
-                        var key = d.job.id.replace(/\./g, "_");
 
+                        var key = d.job.id + "/" + req.query["slaver.slaverMAC"];
                         if(!countList[key]){
                             countList[key] = 0;
                         }
@@ -207,7 +207,7 @@ router.get('/getnew', function(req, res, next) {
                         req.db.get('countList').update({"date" : today},{$set:countList});
 
                         //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
-                        d.queryIndex--;
+                        d.queryIndex-=2;
                         queryDB(d, countList);
                     }
 
@@ -267,7 +267,8 @@ router.get('/getnew', function(req, res, next) {
                     return;
                 }
                 jobs = jobs.filter(function(job){
-                    var key = job.id.replace(/\./g, "_");
+                    var key = job.id + "/" + req.query["slaver.slaverMAC"];
+
                     if(!countList[key]){
                         return true;
                     }
