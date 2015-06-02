@@ -284,7 +284,7 @@ router.get('/getnew', function(req, res, next) {
 
                 if(limit === 1){
                     logger.info("require only 1 task");
-                    var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
+                    var job =  jobs[Math.ceil(Math.random() * jobs.lengthp)-1];
                     queryDB({
                         key: job.id,
                         _length: 1,
@@ -294,14 +294,17 @@ router.get('/getnew', function(req, res, next) {
                     }, countList);
                     return;
                 }
-                var config = jobs.sort(function(job1,job2){
-                    var priority1 = job1.priority ? parseInt(job1.priority) : 0;
-                    var priority2 = job2.priority ?  parseInt(job2.priority) : 0;
-                    return priority2 - priority1;
-                }).map(function(job,i){
-                    var count = Math.floor(limit/length);
+
+                var _length = 0;
+                jobs.forEach(function(job){
+                    job.priority = job.priority?parseInt(job1.priority) : 1;
+                    _length += job.priority;
+                });
+
+                var config = jobs.map(function(job,i){
+                    var count = Math.floor(limit/_length) * job.priority;
                     if(i==0){
-                        count+=limit%length;
+                        count+=limit% _length;
                     };
                     return {
                         key: job.id,
