@@ -284,7 +284,7 @@ router.get('/getnew', function(req, res, next) {
 
                 if(limit === 1){
                     logger.info("require only 1 task");
-                    var job =  jobs[Math.ceil(Math.random() * jobs.lengthp)-1];
+                    var job =  jobs[Math.ceil(Math.random() * jobs.length)-1];
                     queryDB({
                         key: job.id,
                         _length: 1,
