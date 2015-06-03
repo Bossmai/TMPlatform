@@ -201,9 +201,9 @@ router.get('/getnew', function(req, res, next) {
 
                         var key = d.job.id + "/" + req.query["slaver.slaverMAC"];
                         if(!countList[key]){
-                            countList[key] = 0;
+                            countList[key] = {count:0};
                         }
-                        countList[key] += parseInt(d.job.newUsers);
+                        countList[key].count += parseInt(d.job.newUsers);
                         req.db.get('countList').update({"date" : today},{$set:countList});
 
                         //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
@@ -245,6 +245,17 @@ router.get('/getnew', function(req, res, next) {
                             d.queryIndex ++;
                             queryDB(d, countList);
                         }else{
+                            if(d.job._status === "HOLD"){
+                                var key = d.job.id + "/" + req.query["slaver.slaverMAC"];
+                                if(!countList[key]){
+                                    countList[key] = {count: 0};
+                                }
+                                countList[key].hold = true;
+                                req.db.get('countList').update({"date" : today},{$set:countList});
+                                limit = limit - (d._length - d.ret.length);
+                                return;
+                            }
+
                         	logger.info("current task ["+ d.job.appId +"] count :["+d.ret.length+"], not enough so generate new");
                             generateNew(d, countList);
                         }
@@ -257,9 +268,7 @@ router.get('/getnew', function(req, res, next) {
     }
 
     function run(countList){
-        req.db.get('job').find({
-                '_status':'GO'
-            },
+        req.db.get('job').find({},
             function(err, jobs) {
                 if (err) {
                     logger.info("get job failed with err:" + err);
@@ -272,7 +281,7 @@ router.get('/getnew', function(req, res, next) {
                     if(!countList[key]){
                         return true;
                     }
-                    return countList[key] < 100;
+                    return countList[key].count < 100 && (countList[key].hold !== true || job._status !== "HOLD");
                 });
 
                 var length = jobs.length;
