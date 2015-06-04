@@ -58,4 +58,25 @@ router.delete('/:id', function(req, res, next) {
         });
 });
 
+
+/**
+ * fetch job list
+ */
+router.get('/setSimStatus', function(req, res, next) {
+    console.log('slaver.setSimStatus.start');
+    var mac = req.query["slaverMAC"];
+    var running = req.query["running"];
+    var max = req.query["max"];
+    req.db.get('slaver').update(
+        {slaverMAC: mac},
+        {$set: {
+            running : running,
+            max : max
+        }},
+        function(err, docs) {
+            res.setHeader('Content-Type', 'application/json;charset=utf-8');
+            res.send(docs);
+        });
+});
+
 module.exports = router;
