@@ -199,7 +199,7 @@ router.get('/getnew', function(req, res, next) {
                         sendResponse(res, ret);
                     }else{
 
-                        var key = d.job.id + "/" + req.query["slaver.slaverMAC"];
+                        var key = getKey(d.job);
                         if(!countList[key]){
                             countList[key] = {count:0};
                         }
@@ -246,7 +246,7 @@ router.get('/getnew', function(req, res, next) {
                             queryDB(d, countList);
                         }else{
                             if(d.job._status === "HOLD"){
-                                var key = d.job.id + "/" + req.query["slaver.slaverMAC"];
+                                var key = getKey(d.job);
                                 if(!countList[key]){
                                     countList[key] = {count: 0};
                                 }
@@ -267,6 +267,10 @@ router.get('/getnew', function(req, res, next) {
         }
     }
 
+    function getKey(job){
+        return job.id.replace(/\./g, "_") + "/" + req.query["slaver.slaverMAC"];
+    }
+
     function run(countList){
         req.db.get('job').find({},
             function(err, jobs) {
@@ -276,7 +280,7 @@ router.get('/getnew', function(req, res, next) {
                     return;
                 }
                 jobs = jobs.filter(function(job){
-                    var key = job.id + "/" + req.query["slaver.slaverMAC"];
+                    var key = getKey(job);
 
                     if(!countList[key]){
                         return true;
