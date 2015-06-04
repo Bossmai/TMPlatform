@@ -37,6 +37,10 @@ Ext.define('tm.view.SlaverView', {
                 bind:'{current.vpnIP}',
                 selectOnFocus: true
             } }, {
+                text: 'running', dataIndex:'running'
+            },  {
+                text: 'max', dataIndex:'max'
+            }, {
             	 xtype:'actioncolumn',
             	 items: [{
                      icon: '/img/remove.png',
