@@ -1,6 +1,6 @@
 Ext.define('Job',{
     extend: 'Ext.data.Model',
-    fields :['_id','id','appId','planExecDate', 'planExecPeriod', 'newUsers', '_status', 'priority'],
+    fields :['_id','id','appId', 'newUsers', '_status', 'priority'],
     proxy: {
         type: 'rest',
         url: 'job'

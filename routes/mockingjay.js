@@ -1,7 +1,8 @@
 var express = require('express'),
     router = express.Router(),
     moment = require('moment'),
-    uuid = require('node-uuid');
+    uuid = require('node-uuid'),
+    usersToCreate = 20;
 
 var utils = {
     slaverList : undefined,
@@ -179,7 +180,7 @@ var utils = {
     generateTasks : function(job, slaverMAC){
         var me = this;
         var taskList = [];
-        var usersToCreate = parseFloat(job.newUsers);
+
         for(var i =0; i<usersToCreate; i++){
             var _phone = me.phoneTypeList[utils.random(me.phoneTypeList.length-1)];
             var id = uuid.v1() + "_" + (new Date()-0) ;

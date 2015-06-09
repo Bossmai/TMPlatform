@@ -203,7 +203,7 @@ router.get('/getnew', function(req, res, next) {
                         if(!countList[key]){
                             countList[key] = {count:0};
                         }
-                        countList[key].count += parseInt(d.job.newUsers);
+                        countList[key].count += 20;
                         req.db.get('countList').update({"date" : today},{$set:countList});
 
                         //特别处理，基于二次激活任务没找到的情况下，在创建新任务后把查询条件重新回到新增未执行
@@ -267,8 +267,13 @@ router.get('/getnew', function(req, res, next) {
         }
     }
 
+    /**
+     * Method used to generate key for count List
+     * @param job
+     * @returns {string}
+     */
     function getKey(job){
-        return job.id.replace(/\./g, "_") + "/" + req.query["slaver.slaverMAC"];
+        return job.id.replace(/\./g, "_");
     }
 
     function run(countList){
@@ -285,7 +290,7 @@ router.get('/getnew', function(req, res, next) {
                     if(!countList[key]){
                         return true;
                     }
-                    return countList[key].count < 100 && (countList[key].hold !== true || job._status !== "HOLD");
+                    return countList[key].count < job.newUsers && (countList[key].hold !== true || job._status !== "HOLD");
                 });
 
                 var length = jobs.length;

@@ -29,14 +29,6 @@ Ext.define('tm.view.JobView', {
                 bind:'{current.appId}',
                 selectOnFocus: true
             } },
-            { text: 'planExecDate', dataIndex: 'planExecDate',editor:{
-                bind:'{current.planExecDate}',
-                selectOnFocus: true
-            } },
-            { text: 'planExecPeriod', dataIndex: 'planExecPeriod',editor:{
-                bind:'{current.planExecPeriod}',
-                selectOnFocus: true
-            } },
             { text: 'newUsers', dataIndex: 'newUsers',editor:{
                 bind:'{current.newUsers}',
                 selectOnFocus: true
@@ -46,25 +38,20 @@ Ext.define('tm.view.JobView', {
             {
             	 xtype:'actioncolumn',
             	 items: [{
-                     icon: '/img/remove.png',
-                     tooltip: 'Delete',
-                     selectOnFocus: true,
-                     handler: 'onDelete'
-                 },{
-                     icon: '/img/go.png',
-                     tooltip: 'generate new',
-                     selectOnFocus: true,
-                     handler: 'onGenerateNew'
-                 },{
-                     icon: '/img/go.png',
+                     icon: '/img/go.gif',
                      tooltip: 'go',
                      selectOnFocus: true,
                      handler: 'onGo'
                  },{
-                     icon: '/img/go.png',
+                     icon: '/img/hold.gif',
                      tooltip: 'hold',
                      selectOnFocus: true,
                      handler: 'onHold'
+                 },{
+                     icon: '/img/remove.png',
+                     tooltip: 'Delete',
+                     selectOnFocus: true,
+                     handler: 'onDelete'
                  }]
             }
         ],
@@ -94,14 +81,6 @@ Ext.define('tm.view.JobView', {
             fieldLabel: 'appId',
             name: 'appId',
             bind:'{current.appId}'
-        },{
-            fieldLabel: 'planExecDate',
-            name: 'planExecDate',
-            bind:'{current.planExecDate}'
-        },{
-            fieldLabel: 'planExecPeriod',
-            name: 'planExecPeriod',
-            bind:'{current.planExecPeriod}'
         },{
             fieldLabel: 'newUsers',
             name: 'newUsers',
